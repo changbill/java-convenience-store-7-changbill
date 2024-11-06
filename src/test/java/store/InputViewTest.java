@@ -19,7 +19,7 @@ public class InputViewTest {
     }
 
     @Test
-    void 파일_출력_테스트() {
+    void products_파일_출력_테스트() {
         //given
         List<String> fileInput = inputView.readFile(FileLocation.PRODUCTS.getLocation());
         String context = "name,price,quantity,promotion\n"
@@ -45,5 +45,21 @@ public class InputViewTest {
 
         //then
         assertEquals(productContexts, fileInput);
+    }
+
+    @Test
+    void promotions_파일_출력_테스트() {
+        //given
+        List<String> fileInput = inputView.readFile(FileLocation.PROMOTIONS.getLocation());
+        String context = "name,buy,get,start_date,end_date\n"
+                + "탄산2+1,2,1,2024-01-01,2024-12-31\n"
+                + "MD추천상품,1,1,2024-01-01,2024-12-31\n"
+                + "반짝할인,1,1,2024-11-01,2024-11-30\n";
+
+        //when
+        List<String> promotionContexts = Arrays.stream(context.split("\n")).toList();
+
+        //then
+        assertEquals(promotionContexts, fileInput);
     }
 }
