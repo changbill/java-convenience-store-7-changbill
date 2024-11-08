@@ -31,4 +31,12 @@ public class ProductNameAndPrice {
     public int hashCode() {
         return Objects.hash(name, price);
     }
+
+    public String getName() {
+        return name;
+    }
+
+    public long getPrice() {
+        return price;
+    }
 }

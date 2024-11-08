@@ -1,6 +1,7 @@
 package store.controller;
 
 import store.repository.StoreRepository;
+import store.service.parse.OutputParser;
 import store.service.parse.ProductsParser;
 import store.service.StoreService;
 import store.service.parse.PromotionsParser;
@@ -13,9 +14,10 @@ public class StoreControllerFactory {
         StoreRepository storeRepository = new StoreRepository();
         ProductsValidationService productsValidationService = new ProductsValidationService();
         PromotionValidationService promotionValidationService = new PromotionValidationService();
+        OutputParser outputParser = new OutputParser();
         ProductsParser productsParser = new ProductsParser(storeRepository, productsValidationService);
         PromotionsParser promotionsParser = new PromotionsParser(storeRepository, promotionValidationService);
-        StoreService storeService = new StoreService(storeRepository, productsParser, promotionsParser);
+        StoreService storeService = new StoreService(storeRepository, outputParser, productsParser, promotionsParser);
         return new StoreController(storeService);
     }
 }

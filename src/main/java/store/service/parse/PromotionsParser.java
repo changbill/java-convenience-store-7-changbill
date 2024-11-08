@@ -25,7 +25,7 @@ public class PromotionsParser {
         LocalDateTime startDate = LocalDate.parse(rawPromotionInformation.get(3)).atStartOfDay();
         LocalDateTime endDate = LocalDate.parse(rawPromotionInformation.get(4)).atStartOfDay();
 
-        PromotionInformation promotionInformation = PromotionInformation.of(buy, get, startDate, endDate);
+        PromotionInformation promotionInformation = PromotionInformation.of(promotionName, buy, get, startDate, endDate);
 
         return storeRepository.addPromotionInformation(promotionName, promotionInformation);
     }

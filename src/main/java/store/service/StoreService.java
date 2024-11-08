@@ -4,20 +4,28 @@ import java.util.List;
 import store.model.administrator.ProductInformation;
 import store.model.administrator.PromotionInformation;
 import store.repository.StoreRepository;
+import store.service.parse.OutputParser;
 import store.service.parse.ProductsParser;
 import store.service.parse.PromotionsParser;
 import store.util.ParseUtil;
+import store.util.ProductDto;
 
 public class StoreService {
     private static final int HEADER_INDEX = 0;
 
     private final StoreRepository storeRepository;
+    private final OutputParser outputParser;
     private final ProductsParser productsParser;
     private final PromotionsParser promotionsParser;
 
-    public StoreService(StoreRepository storeRepository, ProductsParser productsParser,
-                        PromotionsParser promotionsParser) {
+    public StoreService(
+            StoreRepository storeRepository,
+            OutputParser outputParser,
+            ProductsParser productsParser,
+            PromotionsParser promotionsParser
+    ) {
         this.storeRepository = storeRepository;
+        this.outputParser = outputParser;
         this.productsParser = productsParser;
         this.promotionsParser = promotionsParser;
     }
@@ -44,6 +52,11 @@ public class StoreService {
                                         ParseUtil.splitByComma(rawProductInformation))
                 )
                 .toList();
+    }
+
+    public List<String> getProductsToString() {
+        List<ProductDto> productDtos = storeRepository.findAllProducts();
+        return outputParser.parseProductsToString(productDtos);
     }
 
 //    public void getPurchaseResult(String purchaseContext) {

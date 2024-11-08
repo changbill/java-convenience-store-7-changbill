@@ -10,4 +10,8 @@ public abstract class Stock {
     public long decreaseQuantity(long amount) {
         return this.quantity -= amount;
     }
+
+    public long getQuantity() {
+        return quantity;
+    }
 }

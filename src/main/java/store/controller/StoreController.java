@@ -19,6 +19,9 @@ public class StoreController {
         storeService.saveProductInformation(rawProductInformations);
     }
 
+    public List<String> getProductsToString() {
+        return storeService.getProductsToString();
+    }
 //    public void inputPurchasingProducts(String purchaseContext) {
 //        storeService.getPurchaseResult(purchaseContext);
 //    }

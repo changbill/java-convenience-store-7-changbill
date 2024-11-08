@@ -11,4 +11,8 @@ public class PromotionStock extends Stock {
     public static PromotionStock of(long quantity, PromotionInformation promotion) {
         return new PromotionStock(quantity, promotion);
     }
+
+    public PromotionInformation getPromotion() {
+        return promotion;
+    }
 }
