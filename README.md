@@ -37,9 +37,10 @@
 
 ### 편의점 미션 구현할 기능 정리
 - 입력
-    - [ ] `src/main/resources/products.md`과 `src/main/resources/promotions.md` 파일을 파일 입출력을 통하여 상품 목록과 행사 목록을 불러온다
+    - [x] `src/main/resources/products.md`과 `src/main/resources/promotions.md` 파일을 파일 입출력을 통하여 상품 목록과 행사 목록을 불러온다
       - [x] 파일 입출력
-      - [ ] 상품 목록과 행사 목록으로 parsing 하여 repository 에 저장
+      - [x] 파일 입출력 예외처리
+      - [x] 상품 목록과 행사 목록으로 parsing 하여 repository 에 저장
     - [ ] 구매할 상품과 수량을 입력받는다
       - [ ] 입력
     > ex) [콜라-10],[사이다-3]
