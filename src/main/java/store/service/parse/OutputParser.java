@@ -3,21 +3,21 @@ package store.service.parse;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import store.model.administrator.GeneralStock;
-import store.model.administrator.ProductInformation;
-import store.model.administrator.ProductNameAndPrice;
-import store.model.administrator.PromotionStock;
-import store.model.administrator.Stock;
-import store.util.ProductDto;
+import store.model.stock.GeneralStock;
+import store.model.ProductInformation;
+import store.model.setup.ProductName;
+import store.model.stock.PromotionStock;
+import store.model.stock.Stock;
+import store.model.dto.ProductDto;
 
 public class OutputParser {
 
     public List<String> parseProductsToString(List<ProductDto> productDtos) {
         List<String> result = new ArrayList<>();
         for (ProductDto productDto : productDtos) {
-            ProductNameAndPrice productNameAndPrice = productDto.productNameAndPrice();
-            String name = productNameAndPrice.getName();
-            long price = productNameAndPrice.getPrice();
+            ProductName productName = productDto.productName();
+            String name = productName.getName();
+            long price = productDto.productInformation().getPrice();
 
             ProductInformation productInformation = productDto.productInformation();
 

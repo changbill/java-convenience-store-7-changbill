@@ -15,17 +15,11 @@ public class ProductsValidationService {
             throw new WrongProductsFileException(PRODUCTS_FILE_EXAMPLE);
         }
 
-        validateProductInformationName(rawProductInformation.get(0));
+        ValidationUtil.validateFormatHangul
+                (rawProductInformation.get(0), new WrongProductsFileException(PRODUCTS_FILE_NAME_FORMAT_EXCEPTION));
         validateProductInformationPrice(rawProductInformation.get(1));
         validateProductInformationQuantity(rawProductInformation.get(2));
         validateProductInformationPromotion(rawProductInformation.get(3));
-    }
-
-    private void validateProductInformationName(String rawName) {
-        ValidationUtil.validateNull(rawName, new WrongProductsFileException(PRODUCTS_FILE_EXAMPLE));
-        if (!rawName.matches("\\p{IsHangul}+")) {
-            throw new WrongProductsFileException(PRODUCTS_FILE_NAME_FORMAT_EXCEPTION);
-        }
     }
 
     private void validateProductInformationPrice(String rawPrice) {

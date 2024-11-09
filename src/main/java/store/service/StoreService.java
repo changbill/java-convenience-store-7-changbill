@@ -1,30 +1,35 @@
 package store.service;
 
 import java.util.List;
-import store.model.administrator.ProductInformation;
-import store.model.administrator.PromotionInformation;
-import store.repository.StoreRepository;
+import store.model.dto.ProductOrderDto;
+import store.model.ProductInformation;
+import store.model.setup.PromotionInformation;
+import store.repository.ProductInformationRepository;
+import store.service.parse.InputParser;
 import store.service.parse.OutputParser;
 import store.service.parse.ProductsParser;
 import store.service.parse.PromotionsParser;
 import store.util.ParseUtil;
-import store.util.ProductDto;
+import store.model.dto.ProductDto;
 
 public class StoreService {
     private static final int HEADER_INDEX = 0;
 
-    private final StoreRepository storeRepository;
+    private final ProductInformationRepository productInformationRepository;
+    private final InputParser inputParser;
     private final OutputParser outputParser;
     private final ProductsParser productsParser;
     private final PromotionsParser promotionsParser;
 
     public StoreService(
-            StoreRepository storeRepository,
+            ProductInformationRepository productInformationRepository,
+            InputParser inputParser,
             OutputParser outputParser,
             ProductsParser productsParser,
             PromotionsParser promotionsParser
     ) {
-        this.storeRepository = storeRepository;
+        this.productInformationRepository = productInformationRepository;
+        this.inputParser = inputParser;
         this.outputParser = outputParser;
         this.productsParser = productsParser;
         this.promotionsParser = promotionsParser;
@@ -55,11 +60,12 @@ public class StoreService {
     }
 
     public List<String> getProductsToString() {
-        List<ProductDto> productDtos = storeRepository.findAllProducts();
+        List<ProductDto> productDtos = productInformationRepository.findAllProducts();
         return outputParser.parseProductsToString(productDtos);
     }
 
-//    public void getPurchaseResult(String purchaseContext) {
-//        storeRepository. ((purchaseContext));
-//    }
+    public void getPurchaseResult(String rawPurchaseOrder) {
+        List<ProductOrderDto> productOrderDtos = inputParser.parseToProductOrderDto(rawPurchaseOrder);
+        productInformationRepository.calculateProductOrders(productOrderDtos);
+    }
 }

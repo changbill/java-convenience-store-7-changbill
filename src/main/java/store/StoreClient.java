@@ -29,7 +29,7 @@ public class StoreClient {
         List<String> productsToString = storeController.getProductsToString();
         outputView.printIntroductionMessage(productsToString);
 
-//        String purchaseContext = inputView.purchaseInput();
-//        storeController.inputPurchasingProducts(purchaseContext);
+        String rawPurchaseOrder = inputView.purchaseInput();
+        storeController.inputPurchasingProducts(rawPurchaseOrder);
     }
 }

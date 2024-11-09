@@ -1,21 +1,28 @@
 package store.service.parse;
 
 import java.util.List;
-import store.model.administrator.GeneralStock;
-import store.model.administrator.ProductInformation;
-import store.model.administrator.ProductNameAndPrice;
-import store.model.administrator.PromotionInformation;
-import store.model.administrator.PromotionStock;
-import store.repository.StoreRepository;
+import store.model.stock.GeneralStock;
+import store.model.ProductInformation;
+import store.model.setup.ProductName;
+import store.model.setup.PromotionInformation;
+import store.model.stock.PromotionStock;
+import store.repository.ProductInformationRepository;
+import store.repository.PromotionInformationRepository;
 import store.service.validation.ProductsValidationService;
 import store.util.ParseUtil;
 
 public class ProductsParser {
-    private final StoreRepository storeRepository;
+    private final ProductInformationRepository productInformationRepository;
+    private final PromotionInformationRepository promotionInformationRepository;
     private final ProductsValidationService productsValidationService;
 
-    public ProductsParser(StoreRepository storeRepository, ProductsValidationService productsValidationService) {
-        this.storeRepository = storeRepository;
+    public ProductsParser(
+            ProductInformationRepository productInformationRepository,
+            PromotionInformationRepository promotionInformationRepository,
+            ProductsValidationService productsValidationService
+    ) {
+        this.productInformationRepository = productInformationRepository;
+        this.promotionInformationRepository = promotionInformationRepository;
         this.productsValidationService = productsValidationService;
     }
 
@@ -27,12 +34,12 @@ public class ProductsParser {
         String rawPromotion = rawProductInformation.get(3);
 
         // TODO: 만약 상품명, 가격, stock 종류까지 같은 경우 중복 오류 잡아낼 것
-        ProductNameAndPrice productNameAndPrice = ProductNameAndPrice.of(name, price);
+        ProductName productName = ProductName.of(name);
         if(rawPromotion.equals("null")) {
-            return storeRepository.addProductInformation(productNameAndPrice, GeneralStock.of(quantity));
+            return productInformationRepository.addProductInformation(productName, price, GeneralStock.of(quantity));
         }
 
-        PromotionInformation promotionInformation = storeRepository.findPromotionInformation(rawPromotion);
-        return storeRepository.addProductInformation(productNameAndPrice, PromotionStock.of(quantity, promotionInformation));
+        PromotionInformation promotionInformation = promotionInformationRepository.findPromotionInformation(rawPromotion);
+        return productInformationRepository.addProductInformation(productName, price, PromotionStock.of(quantity, promotionInformation));
     }
 }

@@ -1,4 +1,4 @@
-package store.model.administrator;
+package store.model.setup;
 
 import camp.nextstep.edu.missionutils.DateTimes;
 import java.time.LocalDateTime;
@@ -22,6 +22,7 @@ public class PromotionInformation {
         return new PromotionInformation(promotionName, buy, get, start_date, end_date);
     }
 
+    // TODO: 오늘 날짜에 적용되는 프로모션만 적용.. promotions.md 읽을 때 사용할 수 있고 없고 정하자.
     public boolean isAvailablePromotion() {
         LocalDateTime now = DateTimes.now();
         return start_date.isBefore(now) && end_date.isAfter(now);
@@ -29,5 +30,13 @@ public class PromotionInformation {
 
     public String getPromotionName() {
         return promotionName;
+    }
+
+    public long getBuy() {
+        return buy;
+    }
+
+    public long getGet() {
+        return get;
     }
 }

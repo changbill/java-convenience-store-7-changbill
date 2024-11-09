@@ -1,4 +1,4 @@
-package store.model.administrator;
+package store.model.stock;
 
 public class GeneralStock extends Stock {
 

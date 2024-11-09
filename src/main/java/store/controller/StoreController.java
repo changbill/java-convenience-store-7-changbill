@@ -22,7 +22,8 @@ public class StoreController {
     public List<String> getProductsToString() {
         return storeService.getProductsToString();
     }
-//    public void inputPurchasingProducts(String purchaseContext) {
-//        storeService.getPurchaseResult(purchaseContext);
-//    }
+
+    public void inputPurchasingProducts(String rawPurchaseOrder) {
+        storeService.getPurchaseResult(rawPurchaseOrder);
+    }
 }
