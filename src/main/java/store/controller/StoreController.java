@@ -1,6 +1,7 @@
 package store.controller;
 
 import java.util.List;
+import store.model.dto.purchaseResponse.PurchaseResponse;
 import store.service.StoreService;
 
 public class StoreController {
@@ -23,7 +24,7 @@ public class StoreController {
         return storeService.getProductsToString();
     }
 
-    public void inputPurchasingProducts(String rawPurchaseOrder) {
-        storeService.getPurchaseResult(rawPurchaseOrder);
+    public List<PurchaseResponse> inputPurchasingProducts(String rawPurchaseOrder) {
+        return storeService.getPurchaseResult(rawPurchaseOrder);
     }
 }

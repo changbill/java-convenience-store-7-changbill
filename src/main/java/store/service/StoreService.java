@@ -1,8 +1,10 @@
 package store.service;
 
+import java.util.Comparator;
 import java.util.List;
 import store.model.dto.ProductOrderDto;
 import store.model.ProductInformation;
+import store.model.dto.purchaseResponse.PurchaseResponse;
 import store.model.setup.PromotionInformation;
 import store.repository.ProductInformationRepository;
 import store.service.parse.InputParser;
@@ -64,8 +66,11 @@ public class StoreService {
         return outputParser.parseProductsToString(productDtos);
     }
 
-    public void getPurchaseResult(String rawPurchaseOrder) {
+    public List<PurchaseResponse> getPurchaseResult(String rawPurchaseOrder) {
         List<ProductOrderDto> productOrderDtos = inputParser.parseToProductOrderDto(rawPurchaseOrder);
-        productInformationRepository.calculateProductOrders(productOrderDtos);
+        List<PurchaseResponse> purchaseResponses = productInformationRepository.calculateProductOrders(
+                productOrderDtos);
+        purchaseResponses.sort(Comparator.comparing(PurchaseResponse::getResponseMessage));
+        return purchaseResponses;
     }
 }
