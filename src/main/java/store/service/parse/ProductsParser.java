@@ -38,6 +38,9 @@ public class ProductsParser {
         }
 
         PromotionInformation promotionInformation = promotionInformationRepository.findPromotionInformation(rawPromotion);
+        if(promotionInformation == null) {
+            return productInformationRepository.addProductInformation(name, price, GeneralStock.of(quantity));
+        }
         return productInformationRepository.addProductInformation(name, price, PromotionStock.of(quantity, promotionInformation));
     }
 }

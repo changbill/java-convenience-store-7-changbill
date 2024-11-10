@@ -82,8 +82,7 @@ public class StoreClient {
         while (true) {
             try {
                 String rawPurchaseOrder = inputView.purchaseInput();
-                orderCalculationResponses = storeController.getCalculationResponse(
-                        rawPurchaseOrder);
+                orderCalculationResponses = storeController.getCalculationResponse(rawPurchaseOrder);
                 break;
             } catch (IllegalArgumentException e) {
                 System.out.println(e.getMessage());

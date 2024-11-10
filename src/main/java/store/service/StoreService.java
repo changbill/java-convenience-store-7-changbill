@@ -2,6 +2,7 @@ package store.service;
 
 import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 import store.model.dto.ProductOrderDto;
 import store.model.ProductInformation;
 import store.model.dto.ReceiptDto;
@@ -42,11 +43,11 @@ public class StoreService {
         // TODO: Header 형식 확인하는 예외 만들기
         rawPromotionInformations.remove(HEADER_INDEX);
 
-        return rawPromotionInformations.stream().map(
-                        rawPromotionInformation ->
+        return rawPromotionInformations.stream()
+                .map(rawPromotionInformation ->
                                 promotionsParser.parseToPromotionInformation(
-                                        ParseUtil.splitByComma(rawPromotionInformation))
-                )
+                                        ParseUtil.splitByComma(rawPromotionInformation)))
+                .filter(Objects::nonNull)
                 .toList();
     }
 

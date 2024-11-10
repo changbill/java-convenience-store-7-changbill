@@ -61,7 +61,7 @@ public class OrderCalculation {
     }
 
     public OrderCalculationResponse responseOrderCalculation() {
-        if (promotionStock != null) {
+        if (promotionStock != null && promotionStock.getPromotion() != null) {
             return calculatePromotionStock();
         }
 

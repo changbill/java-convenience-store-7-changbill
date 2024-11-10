@@ -19,7 +19,12 @@ public class PromotionInformation {
     }
 
     public static PromotionInformation of(String promotionName, long buy, long get, LocalDateTime start_date, LocalDateTime end_date) {
-        return new PromotionInformation(promotionName, buy, get, start_date, end_date);
+        PromotionInformation promotionInformation =
+                new PromotionInformation(promotionName, buy, get, start_date, end_date);
+        if(!promotionInformation.isAvailablePromotion()) {
+            return null;
+        }
+        return promotionInformation;
     }
 
     // TODO: 오늘 날짜에 적용되는 프로모션만 적용.. promotions.md 읽을 때 사용할 수 있고 없고 정하자.

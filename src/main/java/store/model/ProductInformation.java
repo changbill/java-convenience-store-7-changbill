@@ -1,8 +1,5 @@
 package store.model;
 
-import static store.exception.ProductsFileExceptionMessage.*;
-
-import store.exception.WrongProductsFileException;
 import store.model.stock.GeneralStock;
 import store.model.stock.PromotionStock;
 
@@ -24,7 +21,8 @@ public class ProductInformation {
 
     public ProductInformation addProductInformation(GeneralStock generalStock) {
         if(this.generalStock.getQuantity() != 0) {
-            throw new WrongProductsFileException(PRODUCTS_FILE_SAME_NAME_DIFFERENT_PRICE_EXCEPTION);
+            this.generalStock = GeneralStock.of(this.generalStock.getQuantity() + generalStock.getQuantity());
+            return this;
         }
         this.generalStock = generalStock;
         return this;

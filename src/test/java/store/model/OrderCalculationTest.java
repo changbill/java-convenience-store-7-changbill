@@ -8,7 +8,7 @@ import static store.util.ResponseMessage.SOME_DONT_BENEFIT;
 import static store.util.ResponseMessage.SUCCESS;
 import static store.util.ResponseMessage.TAKE_EXTRA_BENEFIT;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -31,9 +31,9 @@ class OrderCalculationTest {
     private ProductInformation productInformation;
     private ProductOrderDto productOrderDto;
     private static final PromotionInformation onePlusOnePromotion =
-            PromotionInformation.of("반짝할인", 1, 1, LocalDateTime.now(), LocalDateTime.now());
+            PromotionInformation.of("반짝할인", 1, 1, LocalDate.of(2024, 2, 1).atStartOfDay(), LocalDate.of(2024, 12, 1).atStartOfDay());
     private static final PromotionInformation twoPlusOnePromotion =
-            PromotionInformation.of("탄산2+1", 2, 1, LocalDateTime.now(), LocalDateTime.now());
+            PromotionInformation.of("탄산2+1", 2, 1, LocalDate.of(2024, 2, 1).atStartOfDay(), LocalDate.of(2024, 12, 1).atStartOfDay());
 
     void stockSetup(long promotionStockQuantity, long generalStockQuantity, PromotionInformation promotion) {
         productInformation = new ProductInformation(price, GeneralStock.of(generalStockQuantity));
