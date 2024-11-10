@@ -1,7 +1,8 @@
 package store.controller;
 
 import java.util.List;
-import store.model.dto.purchaseResponse.PurchaseResponse;
+import store.model.dto.ProductOrderDto;
+import store.model.dto.orderCalculationResponse.OrderCalculationResponse;
 import store.service.StoreService;
 
 public class StoreController {
@@ -24,7 +25,11 @@ public class StoreController {
         return storeService.getProductsToString();
     }
 
-    public List<PurchaseResponse> inputPurchasingProducts(String rawPurchaseOrder) {
-        return storeService.getPurchaseResult(rawPurchaseOrder);
+    public List<OrderCalculationResponse> getCalculationResponse(String rawPurchaseOrder) {
+        return storeService.getCalculationResponse(rawPurchaseOrder);
+    }
+
+    public void inputOrders(List<ProductOrderDto> orders) {
+        storeService.putOrders(orders);
     }
 }

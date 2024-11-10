@@ -57,7 +57,7 @@ class PromotionStockCalculationTest {
 
             PromotionStockCalculation promotionStockCalculation = PromotionStockCalculation.of(productInformation, productOrderDto);
 
-            assertThatThrownBy(promotionStockCalculation::responseCalculation)
+            assertThatThrownBy(promotionStockCalculation::responseOrderCalculation)
                     .isInstanceOf(IllegalArgumentException.class)
                     .isInstanceOf(WrongInputException.class)
                     .hasMessageContaining(INPUT_MORE_THEN_STOCK_EXCEPTION);
@@ -102,7 +102,7 @@ class PromotionStockCalculationTest {
 
                 PromotionStockCalculation promotionStockCalculation = PromotionStockCalculation.of(productInformation, productOrderDto);
 
-                assertThatThrownBy(promotionStockCalculation::responseCalculation)
+                assertThatThrownBy(promotionStockCalculation::responseOrderCalculation)
                         .isInstanceOf(IllegalArgumentException.class)
                         .isInstanceOf(WrongInputException.class)
                         .hasMessageContaining(INPUT_MORE_THEN_STOCK_EXCEPTION);
@@ -123,7 +123,7 @@ class PromotionStockCalculationTest {
 
                 PromotionStockCalculation promotionStockCalculation = PromotionStockCalculation.of(productInformation, productOrderDto);
 
-                assertEquals(TAKE_EXTRA_BENEFIT, promotionStockCalculation.responseCalculation().getResponseMessage());
+                assertEquals(TAKE_EXTRA_BENEFIT, promotionStockCalculation.responseOrderCalculation().getResponseMessage());
             });
         }
 
@@ -141,7 +141,7 @@ class PromotionStockCalculationTest {
 
                 PromotionStockCalculation promotionStockCalculation = PromotionStockCalculation.of(productInformation, productOrderDto);
 
-                assertEquals(SOME_DONT_BENEFIT, promotionStockCalculation.responseCalculation().getResponseMessage());
+                assertEquals(SOME_DONT_BENEFIT, promotionStockCalculation.responseOrderCalculation().getResponseMessage());
             });
         }
 
@@ -159,7 +159,7 @@ class PromotionStockCalculationTest {
 
                 PromotionStockCalculation promotionStockCalculation = PromotionStockCalculation.of(productInformation, productOrderDto);
 
-                assertEquals(SUCCESS, promotionStockCalculation.responseCalculation().getResponseMessage());
+                assertEquals(SUCCESS, promotionStockCalculation.responseOrderCalculation().getResponseMessage());
             });
         }
 

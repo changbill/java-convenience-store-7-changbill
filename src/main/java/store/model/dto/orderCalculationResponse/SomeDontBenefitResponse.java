@@ -1,9 +1,9 @@
-package store.model.dto.purchaseResponse;
+package store.model.dto.orderCalculationResponse;
 
 import store.model.dto.ProductOrderDto;
 import store.util.ResponseMessage;
 
-public class SomeDontBenefitResponse extends PurchaseResponse {
+public class SomeDontBenefitResponse extends OrderCalculationResponse {
     private final long notBenefitQuantity;
 
     private SomeDontBenefitResponse(ProductOrderDto productOrderDto, long notBenefitQuantity) {

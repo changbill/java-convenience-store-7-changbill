@@ -8,6 +8,10 @@ public abstract class Stock {
     }
 
     public long decreaseQuantity(long amount) {
+        long result = this.quantity - amount;
+        if(result < 0) {
+            throw new RuntimeException("Stock 보다 많은 양을 decrease 시켰습니다.");
+        }
         return this.quantity -= amount;
     }
 

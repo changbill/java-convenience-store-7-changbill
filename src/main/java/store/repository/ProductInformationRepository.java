@@ -1,14 +1,13 @@
 package store.repository;
 
-import static store.exception.InputExceptionMessage.INPUT_MORE_THEN_STOCK_EXCEPTION;
+import static store.exception.InputExceptionMessage.INPUT_PRODUCT_WRONG_NAME_EXCEPTION;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import store.exception.WrongInputException;
 import store.model.dto.ProductOrderDto;
-import store.model.dto.purchaseResponse.PurchaseResponse;
-import store.model.dto.purchaseResponse.PurchaseSuccessResponse;
+import store.model.dto.orderCalculationResponse.OrderCalculationResponse;
 import store.model.stock.GeneralStock;
 import store.model.ProductInformation;
 import store.model.stock.PromotionStock;
@@ -17,14 +16,13 @@ import store.model.PromotionStockCalculation;
 import store.model.dto.ProductDto;
 
 public class ProductInformationRepository {
-    // TODO: ProductName String 타입으로 변경
     private final LinkedHashMap<String, ProductInformation> productInformationMap =
             new LinkedHashMap<>();
 
     public List<ProductDto> findAllProducts() {
         List<ProductDto> productDtos = new ArrayList<>();
         productInformationMap.forEach(((productName, productInformation) ->
-            productDtos.add(ProductDto.of(productName, productInformation))
+                productDtos.add(ProductDto.of(productName, productInformation))
         ));
         return productDtos;
     }
@@ -34,21 +32,45 @@ public class ProductInformationRepository {
             long price,
             Stock stock
     ) {
-        if(stock.getClass() == GeneralStock.class) {
+        if (stock.getClass() == GeneralStock.class) {
             return storeProductInformation(productName, price, (GeneralStock) stock);
         }
         return storeProductInformation(productName, price, (PromotionStock) stock);
+    }
+
+    public List<OrderCalculationResponse> calculateProductOrders(List<ProductOrderDto> orders) {
+        List<OrderCalculationResponse> orderCalculationResponses = new ArrayList<>();
+        for (ProductOrderDto order : orders) {
+            ProductInformation productInformation = findProductInformation(order.productName());
+
+            orderCalculationResponses.add(
+                    PromotionStockCalculation.of(productInformation, order).responseOrderCalculation()
+            );
+        }
+
+        return orderCalculationResponses;
+    }
+
+    public void putProductOrders(List<ProductOrderDto> orders) {
+        for (ProductOrderDto order : orders) {
+            ProductInformation productInformation = findProductInformation(order.productName());
+
+            ProductInformation updatedProductInformation =
+                    PromotionStockCalculation.of(productInformation, order).updateProductInformation();
+
+            productInformationMap.put(order.productName(), updatedProductInformation);
+        }
     }
 
     private ProductInformation findProductInformation(String productName) {
         if (productInformationMap.containsKey(productName)) {
             return productInformationMap.get(productName);
         }
-        return null;
+        throw new WrongInputException(INPUT_PRODUCT_WRONG_NAME_EXCEPTION);
     }
 
     private ProductInformation storeProductInformation(String productName, long price, PromotionStock promotionStock) {
-        if(productInformationMap.containsKey(productName)) {
+        if (productInformationMap.containsKey(productName)) {
             return productInformationMap.get(productName).addProductInformation(promotionStock);
         }
         ProductInformation productInformation =
@@ -57,34 +79,11 @@ public class ProductInformationRepository {
     }
 
     private ProductInformation storeProductInformation(String productName, long price, GeneralStock generalStock) {
-        if(productInformationMap.containsKey(productName)) {
+        if (productInformationMap.containsKey(productName)) {
             return productInformationMap.get(productName).addProductInformation(generalStock);
         }
         ProductInformation productInformation =
                 new ProductInformation(price, generalStock);
         return productInformationMap.put(productName, productInformation);
-    }
-
-    public List<PurchaseResponse> calculateProductOrders(List<ProductOrderDto> productOrderDtos) {
-        List<PurchaseResponse> purchaseResponses = new ArrayList<>();
-        for(ProductOrderDto productOrderDto : productOrderDtos) {
-            ProductInformation productInformation = productInformationMap.get(productOrderDto.productName());
-            if(productInformation.getPromotionStock() != null) {
-                purchaseResponses.add(
-                        PromotionStockCalculation.of(productInformation, productOrderDto)
-                                .responseCalculation()
-                );
-            }
-
-            long generalStockQuantity = productInformation.getGeneralStock().getQuantity();
-            long orderQuantity = productOrderDto.quantity();
-            if(generalStockQuantity < orderQuantity) {
-                throw new WrongInputException(INPUT_MORE_THEN_STOCK_EXCEPTION);
-            }
-
-            purchaseResponses.add(PurchaseSuccessResponse.of(productOrderDto));
-        }
-
-        return purchaseResponses;
     }
 }

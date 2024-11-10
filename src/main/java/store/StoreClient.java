@@ -1,8 +1,17 @@
 package store;
 
+import static store.exception.InputExceptionMessage.INPUT_Y_OR_N_EXCEPTION;
+import static store.util.ResponseMessage.*;
+
+import java.util.ArrayList;
 import java.util.List;
 import store.controller.StoreController;
 import store.controller.StoreControllerFactory;
+import store.exception.WrongInputException;
+import store.model.dto.ProductOrderDto;
+import store.model.dto.orderCalculationResponse.OrderCalculationResponse;
+import store.model.dto.orderCalculationResponse.SomeDontBenefitResponse;
+import store.model.dto.orderCalculationResponse.TakeExtraBenefitResponse;
 import store.view.FileLocation;
 import store.view.InputView;
 import store.view.OutputView;
@@ -20,42 +29,79 @@ public class StoreClient {
     }
 
     public void run() {
-        List<String> rawPromotionInformations = inputView.readFile(FileLocation.PROMOTIONS.getLocation());
-        storeController.savePromotionInformation(rawPromotionInformations);
+        setUpPromotionsFile();
+        setUpProductsFile();
+        introduceProducts();
+        inputPurchaseList();
+    }
 
-//    private void inputPurchaseList() {
-//        while (true) {
-//            try {
-//                String rawPurchaseOrder = inputView.purchaseInput();
-//                List<PurchaseResponse> purchaseResponses = storeController.inputPurchasingProducts(rawPurchaseOrder);
-//                List<PurchaseResponse> purchaseResponsesWithoutSuccessResponse = purchaseResponses.stream()
-//                        .filter(response -> response.getResponseMessage() != ResponseMessage.SUCCESS)
-//                        .toList();
-//                // 구매 응답이 전부 Success 일 경우
-//                if(purchaseResponsesWithoutSuccessResponse.isEmpty()) {
-//                    return;
-//                }
-//                // 구매 응답 중 사용자의 확인이 필요한 경우
-//                purchaseResponsesWithoutSuccessResponse.forEach(
-//                        purchaseResponse -> {
-//                            outputView.printPurchaseResponse(purchaseResponse);
-//                            String yesOrNo = inputView.simpleInput();
-//                            ValidationUtil.validateYesOrNo(yesOrNo, new WrongInputException(INPUT_Y_OR_N_EXCEPTION));
-//                            if(yesOrNo.equals("Y")) {
-//                                if(purchaseResponse.getResponseMessage().equals(ResponseMessage.TAKE_EXTRA_BENEFIT)) {
-//                                    TakeExtraBenefitResponse takeExtraBenefitResponse = (TakeExtraBenefitResponse) purchaseResponse;
-//                                    long benefitQuantity = takeExtraBenefitResponse.getBenefitQuantity();
-//                                    purchaseResponse.getProductOrderDto().
-//                                }
-//                            }
-//                        }
-//                );
-//            } catch (IllegalArgumentException e) {
-//                System.out.println(e.getMessage());
-//            }
-//        }
-//
-//    }
+    private void inputPurchaseList() {
+        List<OrderCalculationResponse> orderCalculationResponses;
+        while (true) {
+            try {
+                String rawPurchaseOrder = inputView.purchaseInput();
+                orderCalculationResponses = storeController.getCalculationResponse(
+                        rawPurchaseOrder);
+                break;
+            } catch (IllegalArgumentException e) {
+                System.out.println(e.getMessage());
+            }
+        }
+
+        List<ProductOrderDto> reInputProductOrders = new ArrayList<>();
+        List<ProductOrderDto> successOrders = orderCalculationResponses.stream()
+                .filter(response -> response.getResponseMessage() == SUCCESS)
+                .map(OrderCalculationResponse::getProductOrderDto)
+                .toList();
+
+        List<OrderCalculationResponse> orderCalculationResponsesWithoutSuccessResponse = orderCalculationResponses.stream()
+                .filter(response -> response.getResponseMessage() != SUCCESS)
+                .toList();
+
+        // 구매 응답 중 일부 Success 가 아닌 경우
+        if (!orderCalculationResponsesWithoutSuccessResponse.isEmpty()) {
+            // 구매 응답 중 사용자의 확인이 필요한 경우
+            orderCalculationResponsesWithoutSuccessResponse
+                    .forEach(purchaseResponse ->
+                            reInputProductOrders.add(getUpdatedProductOrder(purchaseResponse)));
+        }
+
+        reInputProductOrders.addAll(successOrders);
+        storeController.inputOrders(reInputProductOrders);
+    }
+
+    private ProductOrderDto getUpdatedProductOrder(OrderCalculationResponse purchaseResponse) {
+        while (true) {
+            try {
+                String yesOrNo = inputView.printPurchaseResponse(purchaseResponse);
+                if (purchaseResponse.getResponseMessage().equals(TAKE_EXTRA_BENEFIT)) {
+                    TakeExtraBenefitResponse takeExtraBenefitResponse = (TakeExtraBenefitResponse) purchaseResponse;
+                    long benefitQuantity = takeExtraBenefitResponse.getBenefitQuantity();
+                    String productName = purchaseResponse.getProductOrderDto().productName();
+                    long quantity = purchaseResponse.getProductOrderDto().quantity();
+                    if (yesOrNo.equals("Y")) {
+                        return ProductOrderDto.of(productName, quantity + benefitQuantity);
+                    } else if (yesOrNo.equals("N")) {
+                        return ProductOrderDto.of(productName, quantity);
+                    }
+                } else if (purchaseResponse.getResponseMessage().equals(SOME_DONT_BENEFIT)) {
+                    SomeDontBenefitResponse someDontBenefitResponse = (SomeDontBenefitResponse) purchaseResponse;
+                    long notBenefitQuantity = someDontBenefitResponse.getNotBenefitQuantity();
+                    String productName = purchaseResponse.getProductOrderDto().productName();
+                    long quantity = purchaseResponse.getProductOrderDto().quantity();
+                    if (yesOrNo.equals("Y")) {
+                        return ProductOrderDto.of(productName, quantity);
+                    } else if (yesOrNo.equals("N")) {
+                        return ProductOrderDto.of(productName, quantity - notBenefitQuantity);
+                    }
+                }
+
+                throw new WrongInputException(INPUT_Y_OR_N_EXCEPTION);
+            } catch (IllegalArgumentException e) {
+                System.out.println(e.getMessage());
+            }
+        }
+    }
 
     private void introduceProducts() {
         List<String> productsToString = storeController.getProductsToString();

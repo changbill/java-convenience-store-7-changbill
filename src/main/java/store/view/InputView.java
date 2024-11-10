@@ -6,9 +6,30 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import store.model.dto.orderCalculationResponse.OrderCalculationResponse;
+import store.model.dto.orderCalculationResponse.SomeDontBenefitResponse;
+import store.model.dto.orderCalculationResponse.TakeExtraBenefitResponse;
 
 public class InputView {
     private static final String PRODUCT_INPUT_INTRODUCTION_MESSAGE = "구매하실 상품명과 수량을 입력해 주세요. (예: [사이다-2],[감자칩-1])";
+
+    public String printPurchaseResponse(OrderCalculationResponse orderCalculationResponse) {
+
+        if (orderCalculationResponse.getClass() == TakeExtraBenefitResponse.class) {
+            System.out.printf(
+                    (orderCalculationResponse.getResponseMessage().getMessage()) + "%n",
+                    orderCalculationResponse.getProductOrderDto().productName(),
+                    ((TakeExtraBenefitResponse) orderCalculationResponse).getBenefitQuantity()
+            );
+        } else if (orderCalculationResponse.getClass() == SomeDontBenefitResponse.class) {
+            System.out.printf(
+                    (orderCalculationResponse.getResponseMessage().getMessage()) + "%n",
+                    orderCalculationResponse.getProductOrderDto().productName(),
+                    ((SomeDontBenefitResponse) orderCalculationResponse).getNotBenefitQuantity()
+            );
+        }
+        return Console.readLine();
+    }
 
     public String purchaseInput() {
         System.out.println(PRODUCT_INPUT_INTRODUCTION_MESSAGE);
@@ -19,7 +40,7 @@ public class InputView {
         List<String> lines = new ArrayList<>();
         try {
             BufferedReader br = new BufferedReader(new FileReader(fileLocation));
-            while(true) {
+            while (true) {
                 String line = br.readLine();
                 if (line == null) {
                     break;
@@ -28,7 +49,7 @@ public class InputView {
             }
 
             br.close();
-        } catch(IOException e) {
+        } catch (IOException e) {
             System.out.println(e.getMessage());
         }
         return lines;

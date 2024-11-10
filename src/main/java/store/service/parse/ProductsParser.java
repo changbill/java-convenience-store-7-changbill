@@ -3,7 +3,6 @@ package store.service.parse;
 import java.util.List;
 import store.model.stock.GeneralStock;
 import store.model.ProductInformation;
-import store.model.setup.ProductName;
 import store.model.setup.PromotionInformation;
 import store.model.stock.PromotionStock;
 import store.repository.ProductInformationRepository;
@@ -34,12 +33,11 @@ public class ProductsParser {
         String rawPromotion = rawProductInformation.get(3);
 
         // TODO: 만약 상품명, 가격, stock 종류까지 같은 경우 중복 오류 잡아낼 것
-        ProductName productName = ProductName.of(name);
         if(rawPromotion.equals("null")) {
-            return productInformationRepository.addProductInformation(productName, price, GeneralStock.of(quantity));
+            return productInformationRepository.addProductInformation(name, price, GeneralStock.of(quantity));
         }
 
         PromotionInformation promotionInformation = promotionInformationRepository.findPromotionInformation(rawPromotion);
-        return productInformationRepository.addProductInformation(productName, price, PromotionStock.of(quantity, promotionInformation));
+        return productInformationRepository.addProductInformation(name, price, PromotionStock.of(quantity, promotionInformation));
     }
 }

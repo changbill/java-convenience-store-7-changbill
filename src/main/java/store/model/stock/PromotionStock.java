@@ -1,4 +1,6 @@
-package store.model.administrator;
+package store.model.stock;
+
+import store.model.setup.PromotionInformation;
 
 public class PromotionStock extends Stock {
     private final PromotionInformation promotion;
@@ -10,6 +12,11 @@ public class PromotionStock extends Stock {
 
     public static PromotionStock of(long quantity, PromotionInformation promotion) {
         return new PromotionStock(quantity, promotion);
+    }
+
+    public void putZeroStock() {
+        long stockQuantity = super.getQuantity();
+        decreaseQuantity(stockQuantity);
     }
 
     public PromotionInformation getPromotion() {

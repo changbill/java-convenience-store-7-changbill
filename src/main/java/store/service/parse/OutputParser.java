@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Optional;
 import store.model.stock.GeneralStock;
 import store.model.ProductInformation;
-import store.model.setup.ProductName;
 import store.model.stock.PromotionStock;
 import store.model.stock.Stock;
 import store.model.dto.ProductDto;
@@ -15,8 +14,7 @@ public class OutputParser {
     public List<String> parseProductsToString(List<ProductDto> productDtos) {
         List<String> result = new ArrayList<>();
         for (ProductDto productDto : productDtos) {
-            ProductName productName = productDto.productName();
-            String name = productName.getName();
+            String name = productDto.productName();
             long price = productDto.productInformation().getPrice();
 
             ProductInformation productInformation = productDto.productInformation();
