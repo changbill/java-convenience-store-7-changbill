@@ -4,6 +4,7 @@ import static store.exception.InputExceptionMessage.INPUT_MORE_THEN_STOCK_EXCEPT
 
 import store.exception.WrongInputException;
 import store.model.dto.ProductOrderDto;
+import store.model.dto.ReceiptDto;
 import store.model.dto.orderCalculationResponse.OrderCalculationResponse;
 import store.model.dto.orderCalculationResponse.OrderCalculationSuccessResponse;
 import store.model.dto.orderCalculationResponse.SomeDontBenefitResponse;
@@ -11,13 +12,13 @@ import store.model.dto.orderCalculationResponse.TakeExtraBenefitResponse;
 import store.model.stock.GeneralStock;
 import store.model.stock.PromotionStock;
 
-public class PromotionStockCalculation {
+public class OrderCalculation {
     private final long price;
     private final PromotionStock promotionStock;
     private final ProductOrderDto productOrder;
     private final GeneralStock generalStock;
 
-    private PromotionStockCalculation(
+    private OrderCalculation(
             long price,
             PromotionStock promotionStock,
             ProductOrderDto productOrder,
@@ -29,16 +30,34 @@ public class PromotionStockCalculation {
         this.generalStock = generalStock;
     }
 
-    public static PromotionStockCalculation of(
+    public static OrderCalculation of(
             ProductInformation productInformation,
             ProductOrderDto productOrderDto
     ) {
-        return new PromotionStockCalculation(
+        return new OrderCalculation(
                 productInformation.getPrice(),
                 productInformation.getPromotionStock(),
                 productOrderDto,
                 productInformation.getGeneralStock()
         );
+    }
+
+    public ReceiptDto getReceipt() {
+        long orderQuantity = productOrder.quantity();
+        if(promotionStock != null) {
+            long promotionStockQuantity = promotionStock.getQuantity();
+            long buy = promotionStock.getPromotion().getBuy();
+            long get = promotionStock.getPromotion().getGet();
+            long quotient = buy + get;
+            long providableBenefit = (long) Math.ceil(
+                    (double) promotionStockQuantity / (double) quotient); // 제공할 수 있는 혜택 개수
+
+            long resultBenefit = Math.min(orderQuantity / quotient, providableBenefit);
+
+            return new ReceiptDto(productOrder.productName(), productOrder.quantity(), price, resultBenefit);
+        }
+
+        return new ReceiptDto(productOrder.productName(), productOrder.quantity(), price, 0);
     }
 
     public OrderCalculationResponse responseOrderCalculation() {

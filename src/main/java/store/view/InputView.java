@@ -12,9 +12,20 @@ import store.model.dto.orderCalculationResponse.TakeExtraBenefitResponse;
 
 public class InputView {
     private static final String PRODUCT_INPUT_INTRODUCTION_MESSAGE = "구매하실 상품명과 수량을 입력해 주세요. (예: [사이다-2],[감자칩-1])";
+    private static final String DO_YOU_HAVE_MEMBERSHIP_DISCOUNT = "멤버십 할인을 받으시겠습니까? (Y/N)";
+    private static final String DO_YOU_NEED_SOMETHING_ELSE = "감사합니다. 구매하고 싶은 다른 상품이 있나요? (Y/N)";
+
+    public String getDoYouNeedSomethingElse() {
+        System.out.println(DO_YOU_NEED_SOMETHING_ELSE);
+        return Console.readLine();
+    }
+
+    public String questionMembershipDiscount() {
+        System.out.println(DO_YOU_HAVE_MEMBERSHIP_DISCOUNT);
+        return Console.readLine();
+    }
 
     public String printPurchaseResponse(OrderCalculationResponse orderCalculationResponse) {
-
         if (orderCalculationResponse.getClass() == TakeExtraBenefitResponse.class) {
             System.out.printf(
                     (orderCalculationResponse.getResponseMessage().getMessage()) + "%n",
@@ -28,6 +39,7 @@ public class InputView {
                     ((SomeDontBenefitResponse) orderCalculationResponse).getNotBenefitQuantity()
             );
         }
+
         return Console.readLine();
     }
 

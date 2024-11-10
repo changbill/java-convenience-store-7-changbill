@@ -4,6 +4,7 @@ import java.util.Comparator;
 import java.util.List;
 import store.model.dto.ProductOrderDto;
 import store.model.ProductInformation;
+import store.model.dto.ReceiptDto;
 import store.model.dto.orderCalculationResponse.OrderCalculationResponse;
 import store.model.setup.PromotionInformation;
 import store.repository.ProductInformationRepository;
@@ -68,13 +69,15 @@ public class StoreService {
 
     public List<OrderCalculationResponse> getCalculationResponse(String rawProductOrder) {
         List<ProductOrderDto> productOrderDtos = inputParser.parseToProductOrderDto(rawProductOrder);
-        List<OrderCalculationResponse> orderCalculationResponses = productInformationRepository.calculateProductOrders(
-                productOrderDtos);
+        List<OrderCalculationResponse> orderCalculationResponses =
+                productInformationRepository.calculateProductOrders(productOrderDtos);
+
         orderCalculationResponses.sort(Comparator.comparing(OrderCalculationResponse::getResponseMessage));
         return orderCalculationResponses;
     }
 
-    public void putOrders(List<ProductOrderDto> orders) {
+    public List<ReceiptDto> putOrders(List<ProductOrderDto> orders) {
         productInformationRepository.putProductOrders(orders);
+        return productInformationRepository.calculatePrice(orders);
     }
 }

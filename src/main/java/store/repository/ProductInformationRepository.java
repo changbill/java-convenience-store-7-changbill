@@ -7,12 +7,13 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import store.exception.WrongInputException;
 import store.model.dto.ProductOrderDto;
+import store.model.dto.ReceiptDto;
 import store.model.dto.orderCalculationResponse.OrderCalculationResponse;
 import store.model.stock.GeneralStock;
 import store.model.ProductInformation;
 import store.model.stock.PromotionStock;
 import store.model.stock.Stock;
-import store.model.PromotionStockCalculation;
+import store.model.OrderCalculation;
 import store.model.dto.ProductDto;
 
 public class ProductInformationRepository {
@@ -44,7 +45,7 @@ public class ProductInformationRepository {
             ProductInformation productInformation = findProductInformation(order.productName());
 
             orderCalculationResponses.add(
-                    PromotionStockCalculation.of(productInformation, order).responseOrderCalculation()
+                    OrderCalculation.of(productInformation, order).responseOrderCalculation()
             );
         }
 
@@ -56,7 +57,7 @@ public class ProductInformationRepository {
             ProductInformation productInformation = findProductInformation(order.productName());
 
             ProductInformation updatedProductInformation =
-                    PromotionStockCalculation.of(productInformation, order).updateProductInformation();
+                    OrderCalculation.of(productInformation, order).updateProductInformation();
 
             productInformationMap.put(order.productName(), updatedProductInformation);
         }
@@ -85,5 +86,12 @@ public class ProductInformationRepository {
         ProductInformation productInformation =
                 new ProductInformation(price, generalStock);
         return productInformationMap.put(productName, productInformation);
+    }
+
+    public List<ReceiptDto> calculatePrice(List<ProductOrderDto> orders) {
+        return orders.stream().map(
+                order -> OrderCalculation.of(findProductInformation(order.productName()), order)
+                        .getReceipt()
+        ).toList();
     }
 }

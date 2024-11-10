@@ -24,7 +24,7 @@ import store.model.stock.GeneralStock;
 import store.model.stock.PromotionStock;
 import store.repository.ProductInformationRepository;
 
-class PromotionStockCalculationTest {
+class OrderCalculationTest {
     private ProductInformationRepository repository;
     private final long price = 1000;
     private final String productName = "사이다";
@@ -55,9 +55,9 @@ class PromotionStockCalculationTest {
             stockSetup(3, 3, onePlusOnePromotion);
             orderSetup(7);
 
-            PromotionStockCalculation promotionStockCalculation = PromotionStockCalculation.of(productInformation, productOrderDto);
+            OrderCalculation orderCalculation = OrderCalculation.of(productInformation, productOrderDto);
 
-            assertThatThrownBy(promotionStockCalculation::responseOrderCalculation)
+            assertThatThrownBy(orderCalculation::responseOrderCalculation)
                     .isInstanceOf(IllegalArgumentException.class)
                     .isInstanceOf(WrongInputException.class)
                     .hasMessageContaining(INPUT_MORE_THEN_STOCK_EXCEPTION);
@@ -92,7 +92,7 @@ class PromotionStockCalculationTest {
 
     @Nested
     @DisplayName("프로모션 재고 있을경우 테스트")
-    class PromotionStockPromotionStockCalculationTests {
+    class PromotionStockOrderCalculationTests {
 
         @Test
         void 재고부족_예외테스트() {
@@ -100,9 +100,9 @@ class PromotionStockCalculationTest {
                 stockSetup(1, 0, onePlusOnePromotion);
                 orderSetup(2);
 
-                PromotionStockCalculation promotionStockCalculation = PromotionStockCalculation.of(productInformation, productOrderDto);
+                OrderCalculation orderCalculation = OrderCalculation.of(productInformation, productOrderDto);
 
-                assertThatThrownBy(promotionStockCalculation::responseOrderCalculation)
+                assertThatThrownBy(orderCalculation::responseOrderCalculation)
                         .isInstanceOf(IllegalArgumentException.class)
                         .isInstanceOf(WrongInputException.class)
                         .hasMessageContaining(INPUT_MORE_THEN_STOCK_EXCEPTION);
@@ -121,9 +121,9 @@ class PromotionStockCalculationTest {
                 stockSetup(promotionStockQuantity, generalStockQuantity, promotion);
                 orderSetup(orderQuantity);
 
-                PromotionStockCalculation promotionStockCalculation = PromotionStockCalculation.of(productInformation, productOrderDto);
+                OrderCalculation orderCalculation = OrderCalculation.of(productInformation, productOrderDto);
 
-                assertEquals(TAKE_EXTRA_BENEFIT, promotionStockCalculation.responseOrderCalculation().getResponseMessage());
+                assertEquals(TAKE_EXTRA_BENEFIT, orderCalculation.responseOrderCalculation().getResponseMessage());
             });
         }
 
@@ -139,9 +139,9 @@ class PromotionStockCalculationTest {
                 stockSetup(promotionStockQuantity, generalStockQuantity, promotion);
                 orderSetup(orderQuantity);
 
-                PromotionStockCalculation promotionStockCalculation = PromotionStockCalculation.of(productInformation, productOrderDto);
+                OrderCalculation orderCalculation = OrderCalculation.of(productInformation, productOrderDto);
 
-                assertEquals(SOME_DONT_BENEFIT, promotionStockCalculation.responseOrderCalculation().getResponseMessage());
+                assertEquals(SOME_DONT_BENEFIT, orderCalculation.responseOrderCalculation().getResponseMessage());
             });
         }
 
@@ -157,9 +157,9 @@ class PromotionStockCalculationTest {
                 stockSetup(promotionStockQuantity, generalStockQuantity, promotion);
                 orderSetup(orderQuantity);
 
-                PromotionStockCalculation promotionStockCalculation = PromotionStockCalculation.of(productInformation, productOrderDto);
+                OrderCalculation orderCalculation = OrderCalculation.of(productInformation, productOrderDto);
 
-                assertEquals(SUCCESS, promotionStockCalculation.responseOrderCalculation().getResponseMessage());
+                assertEquals(SUCCESS, orderCalculation.responseOrderCalculation().getResponseMessage());
             });
         }
 

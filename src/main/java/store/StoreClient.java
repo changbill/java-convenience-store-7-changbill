@@ -9,6 +9,7 @@ import store.controller.StoreController;
 import store.controller.StoreControllerFactory;
 import store.exception.WrongInputException;
 import store.model.dto.ProductOrderDto;
+import store.model.dto.ReceiptDto;
 import store.model.dto.orderCalculationResponse.OrderCalculationResponse;
 import store.model.dto.orderCalculationResponse.SomeDontBenefitResponse;
 import store.model.dto.orderCalculationResponse.TakeExtraBenefitResponse;
@@ -29,13 +30,54 @@ public class StoreClient {
     }
 
     public void run() {
-        setUpPromotionsFile();
-        setUpProductsFile();
-        introduceProducts();
-        inputPurchaseList();
+        while(true) {
+            setUpPromotionsFile();
+            setUpProductsFile();
+            introduceProducts();
+            List<ReceiptDto> receiptDtos = inputPurchaseList();
+            printReceiptCoverWithTryCatch(receiptDtos);
+            if(!isRunAgain()) {
+                break;
+            }
+        }
+
     }
 
-    private void inputPurchaseList() {
+    private boolean isRunAgain() {
+        String yesOrNo = inputView.getDoYouNeedSomethingElse();
+        if (yesOrNo.equals("Y")) {
+            return true;
+        } else if (yesOrNo.equals("N")) {
+            return false;
+        }
+        throw new WrongInputException(INPUT_Y_OR_N_EXCEPTION);
+    }
+
+    private void printReceiptCoverWithTryCatch(List<ReceiptDto> receiptDtos) {
+        while(true) {
+            try{
+                printReceipt(receiptDtos);
+                break;
+            } catch (IllegalArgumentException e) {
+                System.out.println(e.getMessage());
+            }
+        }
+    }
+
+    private void printReceipt(List<ReceiptDto> receiptDtos) {
+        String isMembership = inputView.questionMembershipDiscount();
+        if (isMembership.equals("Y")) {
+            outputView.printReceipt(receiptDtos, true);
+            return;
+        } else if (isMembership.equals("N")) {
+            outputView.printReceipt(receiptDtos, false);
+            return;
+        }
+
+        throw new WrongInputException(INPUT_Y_OR_N_EXCEPTION);
+    }
+
+    private List<ReceiptDto> inputPurchaseList() {
         List<OrderCalculationResponse> orderCalculationResponses;
         while (true) {
             try {
@@ -67,7 +109,7 @@ public class StoreClient {
         }
 
         reInputProductOrders.addAll(successOrders);
-        storeController.inputOrders(reInputProductOrders);
+        return storeController.inputOrders(reInputProductOrders);
     }
 
     private ProductOrderDto getUpdatedProductOrder(OrderCalculationResponse purchaseResponse) {

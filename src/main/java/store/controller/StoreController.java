@@ -2,6 +2,7 @@ package store.controller;
 
 import java.util.List;
 import store.model.dto.ProductOrderDto;
+import store.model.dto.ReceiptDto;
 import store.model.dto.orderCalculationResponse.OrderCalculationResponse;
 import store.service.StoreService;
 
@@ -29,7 +30,7 @@ public class StoreController {
         return storeService.getCalculationResponse(rawPurchaseOrder);
     }
 
-    public void inputOrders(List<ProductOrderDto> orders) {
-        storeService.putOrders(orders);
+    public List<ReceiptDto> inputOrders(List<ProductOrderDto> orders) {
+        return storeService.putOrders(orders);
     }
 }
