@@ -6,7 +6,8 @@ public record ReceiptDto(
         String productName,
         long orderQuantity,
         long productPrice,
-        long resultBenefit
+        long resultBenefit,
+        long discountedQuantity
 ) {
     public String toReceiptString() {
         return productName + "		"

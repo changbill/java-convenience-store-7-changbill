@@ -47,8 +47,10 @@ public class OutputView {
             totalPrice += receipt.orderQuantity() * receipt.productPrice();
             if(receipt.resultBenefit() > 0) {
                 totalDiscount += receipt.resultBenefit() * receipt.productPrice();
-            } else if(isMembership && receipt.resultBenefit() == 0) {
-                totalMembershipDiscount += (long) ((double) receipt.productPrice() * 0.3);
+            }
+
+            if(isMembership) {
+                totalMembershipDiscount += (long) ((double) (receipt.orderQuantity() - receipt.discountedQuantity()) * (double) receipt.productPrice() * 0.3);
             }
         }
 

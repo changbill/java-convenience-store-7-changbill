@@ -54,10 +54,10 @@ public class OrderCalculation {
 
             long resultBenefit = Math.min(orderQuantity / quotient, providableBenefit);
 
-            return new ReceiptDto(productOrder.productName(), productOrder.quantity(), price, resultBenefit);
+            return new ReceiptDto(productOrder.productName(), productOrder.quantity(), price, resultBenefit, resultBenefit * quotient);
         }
 
-        return new ReceiptDto(productOrder.productName(), productOrder.quantity(), price, 0);
+        return new ReceiptDto(productOrder.productName(), productOrder.quantity(), price, 0, 0);
     }
 
     public OrderCalculationResponse responseOrderCalculation() {
