@@ -40,9 +40,14 @@ public class ProductsParser {
         }
 
         PromotionInformation promotionInformation = promotionInformationRepository.findPromotionInformation(rawPromotion);
-        if(promotionInformation == null) {  // 상품 등록 시 프로모션이 해당 날짜에 유효하지 않거나 없을 경우
+        if(promotionInformation == null) {  // 상품 등록 시 찾는 프로모션이 없을 경우
             throw new ProductsFileException(PRODUCTS_FILE_WRONG_PROMOTION_EXCEPTION);
         }
-        return productInformationRepository.addProductInformation(name, price, PromotionStock.of(quantity, promotionInformation));
+
+        if(promotionInformation.isAvailablePromotion()) {   // 상품 등록 시 프로모션이 해당 날짜에 유효하다면
+            return productInformationRepository.addProductInformation(name, price, PromotionStock.of(quantity, promotionInformation));
+        }
+
+        return productInformationRepository.addProductInformation(name, price, GeneralStock.of(quantity));
     }
 }

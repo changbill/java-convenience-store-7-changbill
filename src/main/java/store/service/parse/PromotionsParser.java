@@ -4,22 +4,18 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import store.model.setup.PromotionInformation;
-import store.repository.ProductInformationRepository;
 import store.repository.PromotionInformationRepository;
 import store.service.validation.PromotionValidationService;
 import store.util.ParseUtil;
 
 public class PromotionsParser {
-    private final ProductInformationRepository productInformationRepository;
     private final PromotionInformationRepository promotionInformationRepository;
     private final PromotionValidationService promotionValidationService;
 
     public PromotionsParser(
-            ProductInformationRepository productInformationRepository,
             PromotionInformationRepository promotionInformationRepository,
             PromotionValidationService promotionValidationService
     ) {
-        this.productInformationRepository = productInformationRepository;
         this.promotionInformationRepository = promotionInformationRepository;
         this.promotionValidationService = promotionValidationService;
     }
@@ -35,11 +31,6 @@ public class PromotionsParser {
         PromotionInformation promotionInformation =
                 PromotionInformation.of(promotionName, buy, get, startDate, endDate);
 
-        if(promotionInformation != null) {
-            return promotionInformationRepository.addPromotionInformation(promotionName, promotionInformation);
-        }
-        return null;
+        return promotionInformationRepository.addPromotionInformation(promotionName, promotionInformation);
     }
-
-
 }

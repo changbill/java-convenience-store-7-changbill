@@ -19,12 +19,7 @@ public class PromotionInformation {
     }
 
     public static PromotionInformation of(String promotionName, long buy, long get, LocalDateTime start_date, LocalDateTime end_date) {
-        PromotionInformation promotionInformation =
-                new PromotionInformation(promotionName, buy, get, start_date, end_date);
-        if(!promotionInformation.isAvailablePromotion()) {
-            return null;
-        }
-        return promotionInformation;
+        return new PromotionInformation(promotionName, buy, get, start_date, end_date);
     }
     
     public double calculateBuyGetRatio() {

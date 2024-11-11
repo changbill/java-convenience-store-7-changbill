@@ -29,6 +29,13 @@ public class ProductInformation {
     }
 
     public ProductInformation addProductInformation(PromotionStock promotionStock) {
+        if(this.promotionStock != null) {
+            double existingPromotionRatio = this.promotionStock.getPromotion().calculateBuyGetRatio();
+            double newPromotionRatio = promotionStock.getPromotion().calculateBuyGetRatio();
+            if(newPromotionRatio <= existingPromotionRatio) {
+                return this;
+            }
+        }
         this.promotionStock = promotionStock;
         return this;
     }

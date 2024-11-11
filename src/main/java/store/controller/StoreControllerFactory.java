@@ -22,7 +22,7 @@ public class StoreControllerFactory {
         InputParser inputParser = new InputParser(productInformationRepository, inputValidationService);
         OutputParser outputParser = new OutputParser();
         ProductsParser productsParser = new ProductsParser(productInformationRepository, promotionInformationRepository, productsValidationService);
-        PromotionsParser promotionsParser = new PromotionsParser(productInformationRepository, promotionInformationRepository, promotionValidationService);
+        PromotionsParser promotionsParser = new PromotionsParser(promotionInformationRepository, promotionValidationService);
         StoreService storeService = new StoreService(productInformationRepository, inputParser, outputParser, productsParser, promotionsParser);
         return new StoreController(storeService);
     }
