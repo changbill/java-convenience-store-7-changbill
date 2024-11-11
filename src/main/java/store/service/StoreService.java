@@ -40,7 +40,6 @@ public class StoreService {
     }
 
     public List<PromotionInformation> savePromotionInformation(List<String> rawPromotionInformations) {
-        // TODO: Header 형식 확인하는 예외 만들기
         rawPromotionInformations.remove(HEADER_INDEX);
 
         return rawPromotionInformations.stream()
@@ -52,7 +51,6 @@ public class StoreService {
     }
 
     public List<ProductInformation> saveProductInformation(List<String> rawProductInformations) {
-        // TODO: Header 형식 확인하는 예외 만들기
         rawProductInformations.remove(HEADER_INDEX);
 
         return rawProductInformations.stream().map(

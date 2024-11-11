@@ -16,14 +16,19 @@ public class StoreControllerFactory {
     public static StoreController getStoreController() {
         ProductInformationRepository productInformationRepository = new ProductInformationRepository();
         PromotionInformationRepository promotionInformationRepository = new PromotionInformationRepository();
+
         ProductsValidationService productsValidationService = new ProductsValidationService(promotionInformationRepository);
         PromotionValidationService promotionValidationService = new PromotionValidationService();
         InputValidationService inputValidationService = new InputValidationService();
-        InputParser inputParser = new InputParser(productInformationRepository, inputValidationService);
+
+        InputParser inputParser = new InputParser(inputValidationService);
         OutputParser outputParser = new OutputParser();
+
         ProductsParser productsParser = new ProductsParser(productInformationRepository, promotionInformationRepository, productsValidationService);
         PromotionsParser promotionsParser = new PromotionsParser(promotionInformationRepository, promotionValidationService);
+
         StoreService storeService = new StoreService(productInformationRepository, inputParser, outputParser, productsParser, promotionsParser);
+
         return new StoreController(storeService);
     }
 }

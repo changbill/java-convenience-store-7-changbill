@@ -34,10 +34,14 @@ public class ProductInformation {
             double existingPromotionRatio = this.promotionStock.getPromotion().calculateBuyGetRatio();
             double newPromotionRatio = promotionStock.getPromotion().calculateBuyGetRatio();
             if(newPromotionRatio <= existingPromotionRatio) {
-                this.generalStock = GeneralStock.of(this.generalStock.getQuantity() + promotionStock.getQuantity());
+                this.generalStock =
+                        GeneralStock.of(this.generalStock.getQuantity() + promotionStock.getQuantity());
+
                 return this;
             }
-            this.generalStock = GeneralStock.of(this.generalStock.getQuantity() + this.promotionStock.getQuantity());
+
+            this.generalStock =
+                    GeneralStock.of(this.generalStock.getQuantity() + this.promotionStock.getQuantity());
         } else if(this.promotionStock != null) {
             double existingPromotionRatio = this.promotionStock.getPromotion().calculateBuyGetRatio();
             double newPromotionRatio = promotionStock.getPromotion().calculateBuyGetRatio();
@@ -45,8 +49,10 @@ public class ProductInformation {
                 this.generalStock = GeneralStock.of(promotionStock.getQuantity());
                 return this;
             }
+
             this.generalStock = GeneralStock.of(this.generalStock.getQuantity());
         }
+
         this.promotionStock = promotionStock;
         return this;
     }

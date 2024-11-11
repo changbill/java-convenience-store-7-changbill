@@ -22,7 +22,7 @@ class StoreServiceTest {
     @BeforeEach
     void setUp() {
         productInformationRepository = new ProductInformationRepository();
-        inputParser = new InputParser(productInformationRepository, new InputValidationService());
+        inputParser = new InputParser(new InputValidationService());
         outputParser = new OutputParser();
         PromotionInformationRepository promotionInformationRepository = new PromotionInformationRepository();
         productsParser = new ProductsParser(productInformationRepository, promotionInformationRepository, new ProductsValidationService(promotionInformationRepository));

@@ -70,7 +70,11 @@ public class ProductInformationRepository {
         throw new InputException(INPUT_PRODUCT_WRONG_NAME_EXCEPTION);
     }
 
-    private ProductInformation storeProductInformation(String productName, long price, PromotionStock promotionStock) {
+    private ProductInformation storeProductInformation(
+            String productName,
+            long price,
+            PromotionStock promotionStock
+    ) {
         if (productInformationMap.containsKey(productName)) {
             return productInformationMap.get(productName).addProductInformation(promotionStock);
         }
@@ -79,7 +83,11 @@ public class ProductInformationRepository {
         return productInformationMap.put(productName, productInformation);
     }
 
-    private ProductInformation storeProductInformation(String productName, long price, GeneralStock generalStock) {
+    private ProductInformation storeProductInformation(
+            String productName,
+            long price,
+            GeneralStock generalStock
+    ) {
         if (productInformationMap.containsKey(productName)) {
             return productInformationMap.get(productName).addProductInformation(generalStock);
         }

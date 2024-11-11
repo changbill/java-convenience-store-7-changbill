@@ -9,6 +9,12 @@ import store.service.validation.PromotionValidationService;
 import store.util.ParseUtil;
 
 public class PromotionsParser {
+    private static final int PROMOTION_NAME_INDEX = 0;
+    private static final int BUY_INDEX = 1;
+    private static final int GET_INDEX = 2;
+    private static final int START_DATE_INDEX = 3;
+    private static final int END_DATE_INDEX = 4;
+
     private final PromotionInformationRepository promotionInformationRepository;
     private final PromotionValidationService promotionValidationService;
 
@@ -22,11 +28,11 @@ public class PromotionsParser {
 
     public PromotionInformation parseToPromotionInformation(List<String> rawPromotionInformation) {
         promotionValidationService.validatePromotionInformations(rawPromotionInformation);
-        String promotionName = rawPromotionInformation.get(0);
-        long buy = ParseUtil.parseToLong(rawPromotionInformation.get(1));
-        long get = ParseUtil.parseToLong(rawPromotionInformation.get(2));
-        LocalDateTime startDate = LocalDate.parse(rawPromotionInformation.get(3)).atStartOfDay();
-        LocalDateTime endDate = LocalDate.parse(rawPromotionInformation.get(4)).atStartOfDay();
+        String promotionName = rawPromotionInformation.get(PROMOTION_NAME_INDEX);
+        long buy = ParseUtil.parseToLong(rawPromotionInformation.get(BUY_INDEX));
+        long get = ParseUtil.parseToLong(rawPromotionInformation.get(GET_INDEX));
+        LocalDateTime startDate = LocalDate.parse(rawPromotionInformation.get(START_DATE_INDEX)).atStartOfDay();
+        LocalDateTime endDate = LocalDate.parse(rawPromotionInformation.get(END_DATE_INDEX)).atStartOfDay();
 
         PromotionInformation promotionInformation =
                 PromotionInformation.of(promotionName, buy, get, startDate, endDate);

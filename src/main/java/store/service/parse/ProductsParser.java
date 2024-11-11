@@ -14,6 +14,11 @@ import store.service.validation.ProductsValidationService;
 import store.util.ParseUtil;
 
 public class ProductsParser {
+    private static final int NAME_INDEX = 0;
+    private static final int PRICE_INDEX = 1;
+    private static final int QUANTITY_INDEX = 2;
+    private static final int PROMOTION_INDEX = 3;
+
     private final ProductInformationRepository productInformationRepository;
     private final PromotionInformationRepository promotionInformationRepository;
     private final ProductsValidationService productsValidationService;
@@ -30,10 +35,10 @@ public class ProductsParser {
 
     public ProductInformation parseToProductInformation(List<String> rawProductInformation) {
         productsValidationService.validateProductInformations(rawProductInformation);
-        String name = rawProductInformation.get(0);
-        long price = ParseUtil.parseToLong(rawProductInformation.get(1));
-        long quantity = ParseUtil.parseToLong(rawProductInformation.get(2));
-        String rawPromotion = rawProductInformation.get(3);
+        String name = rawProductInformation.get(NAME_INDEX);
+        long price = ParseUtil.parseToLong(rawProductInformation.get(PRICE_INDEX));
+        long quantity = ParseUtil.parseToLong(rawProductInformation.get(QUANTITY_INDEX));
+        String rawPromotion = rawProductInformation.get(PROMOTION_INDEX);
 
         if(rawPromotion.equals("null")) {
             return productInformationRepository.addProductInformation(name, price, GeneralStock.of(quantity));
@@ -45,7 +50,11 @@ public class ProductsParser {
         }
 
         if(promotionInformation.isAvailablePromotion()) {   // 상품 등록 시 프로모션이 해당 날짜에 유효하다면
-            return productInformationRepository.addProductInformation(name, price, PromotionStock.of(quantity, promotionInformation));
+            return productInformationRepository.addProductInformation(
+                    name,
+                    price,
+                    PromotionStock.of(quantity, promotionInformation)
+            );
         }
 
         return productInformationRepository.addProductInformation(name, price, GeneralStock.of(quantity));

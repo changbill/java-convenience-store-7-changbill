@@ -14,7 +14,10 @@ public class PromotionInformationRepository {
         return promotionMap.get(rawPromotion);
     }
 
-    public PromotionInformation addPromotionInformation(String promotionName, PromotionInformation promotionInformation) {
+    public PromotionInformation addPromotionInformation(
+            String promotionName,
+            PromotionInformation promotionInformation
+    ) {
         if(promotionMap.containsKey(promotionName)) {
             throw new PromotionsFileException(PROMOTIONS_FILE_SAME_NAME_DIFFERENT_PRICE_EXCEPTION);
         }

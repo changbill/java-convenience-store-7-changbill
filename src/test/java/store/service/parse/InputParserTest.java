@@ -11,12 +11,11 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import store.exception.InputException;
 import store.model.dto.ProductOrderDto;
-import store.repository.ProductInformationRepository;
 import store.service.validation.InputValidationService;
 
 class InputParserTest {
 
-    InputParser inputParser = new InputParser(new ProductInformationRepository(), new InputValidationService());
+    InputParser inputParser = new InputParser(new InputValidationService());
 
     @Test
     void 주문내용_변환_테스트() {
