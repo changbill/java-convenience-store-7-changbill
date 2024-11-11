@@ -1,7 +1,10 @@
 package store.repository;
 
 
+import static store.exception.PromotionsFileExceptionMessage.PROMOTIONS_FILE_SAME_NAME_DIFFERENT_PRICE_EXCEPTION;
+
 import java.util.HashMap;
+import store.exception.PromotionsFileException;
 import store.model.setup.PromotionInformation;
 
 public class PromotionInformationRepository {
@@ -13,11 +16,7 @@ public class PromotionInformationRepository {
 
     public PromotionInformation addPromotionInformation(String promotionName, PromotionInformation promotionInformation) {
         if(promotionMap.containsKey(promotionName)) {
-            double existingPromotion = promotionMap.get(promotionName).calculateBuyGetRatio();
-            double newPromotion = promotionInformation.calculateBuyGetRatio();
-            if(newPromotion <= existingPromotion) {
-                return promotionMap.get(promotionName);
-            }
+            throw new PromotionsFileException(PROMOTIONS_FILE_SAME_NAME_DIFFERENT_PRICE_EXCEPTION);
         }
         return promotionMap.put(promotionName, promotionInformation);
     }

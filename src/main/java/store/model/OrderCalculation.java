@@ -2,7 +2,7 @@ package store.model;
 
 import static store.exception.InputExceptionMessage.INPUT_MORE_THEN_STOCK_EXCEPTION;
 
-import store.exception.WrongInputException;
+import store.exception.InputException;
 import store.model.dto.ProductOrderDto;
 import store.model.dto.ReceiptDto;
 import store.model.dto.orderCalculationResponse.OrderCalculationResponse;
@@ -117,7 +117,7 @@ public class OrderCalculation {
 
     private void validateRunOutOfStock(long stockQuantity) {
         if(stockQuantity < productOrder.quantity()) {
-            throw new WrongInputException(INPUT_MORE_THEN_STOCK_EXCEPTION);
+            throw new InputException(INPUT_MORE_THEN_STOCK_EXCEPTION);
         }
     }
 }

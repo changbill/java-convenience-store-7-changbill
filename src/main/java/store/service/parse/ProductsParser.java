@@ -1,6 +1,9 @@
 package store.service.parse;
 
+import static store.exception.ProductsFileExceptionMessage.PRODUCTS_FILE_WRONG_PROMOTION_EXCEPTION;
+
 import java.util.List;
+import store.exception.ProductsFileException;
 import store.model.stock.GeneralStock;
 import store.model.ProductInformation;
 import store.model.setup.PromotionInformation;
@@ -32,14 +35,13 @@ public class ProductsParser {
         long quantity = ParseUtil.parseToLong(rawProductInformation.get(2));
         String rawPromotion = rawProductInformation.get(3);
 
-        // TODO: 만약 상품명, 가격, stock 종류까지 같은 경우 중복 오류 잡아낼 것
         if(rawPromotion.equals("null")) {
             return productInformationRepository.addProductInformation(name, price, GeneralStock.of(quantity));
         }
 
         PromotionInformation promotionInformation = promotionInformationRepository.findPromotionInformation(rawPromotion);
-        if(promotionInformation == null) {
-            return productInformationRepository.addProductInformation(name, price, GeneralStock.of(quantity));
+        if(promotionInformation == null) {  // 상품 등록 시 프로모션이 해당 날짜에 유효하지 않거나 없을 경우
+            throw new ProductsFileException(PRODUCTS_FILE_WRONG_PROMOTION_EXCEPTION);
         }
         return productInformationRepository.addProductInformation(name, price, PromotionStock.of(quantity, promotionInformation));
     }

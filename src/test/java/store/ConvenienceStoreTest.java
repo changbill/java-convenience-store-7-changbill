@@ -2,6 +2,7 @@ package store;
 
 import static camp.nextstep.edu.missionutils.test.Assertions.assertSimpleTest;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import camp.nextstep.edu.missionutils.test.NsTest;
 import org.junit.jupiter.api.BeforeEach;
@@ -11,6 +12,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullSource;
 import org.junit.jupiter.params.provider.ValueSource;
+import store.exception.PromotionsFileException;
 
 class ConvenienceStoreTest extends NsTest {
 
@@ -42,7 +44,7 @@ class ConvenienceStoreTest extends NsTest {
             }
 
             @ParameterizedTest
-            @ValueSource(strings = {"y","n","A","1","!","\n"})
+            @ValueSource(strings = {"y", "n", "A", "1", "!", "\n"})
             @NullSource
             @DisplayName("잘못된 입력입니다")
             void yesOrNoException(String yesOrNo) {
@@ -90,25 +92,68 @@ class ConvenienceStoreTest extends NsTest {
             @Test
             @DisplayName("이미 같은 이름의 행사가 존재합니다")
             void nameException() {
-
+                assertSimpleTest(() ->
+                        assertThatThrownBy(() ->
+                                convenienceStore.setUpPromotionsFile(
+                                        "src/main/resources/promotionsException/nameDuplicateException.md"
+                                ))
+                                .isInstanceOf(IllegalArgumentException.class)
+                                .isInstanceOf(PromotionsFileException.class)
+                                .hasMessageContaining("[ERROR] 프로모션 목록 파일의 형식이 잘못되었습니다. 이미 같은 이름의 행사가 존재합니다."));
             }
 
-            @Test
+            @ParameterizedTest
             @DisplayName("name,buy,get,start_date,end_date 형식으로 된 파일을 등록해주세요")
-            void formatException() {
-
+            @ValueSource(strings = {
+                    "src/main/resources/promotionsException/elementsLessThenFiveFormatException.md",
+                    "src/main/resources/promotionsException/emptyElementFormatException.md"
+            })
+            void formatException(String location) {
+                assertSimpleTest(() ->
+                        assertThatThrownBy(() ->
+                                convenienceStore.setUpPromotionsFile(location))
+                                .isInstanceOf(IllegalArgumentException.class)
+                                .isInstanceOf(PromotionsFileException.class)
+                                .hasMessageContaining(
+                                        "[ERROR] 프로모션 목록 파일의 형식이 잘못되었습니다. name,buy,get,start_date,end_date 형식으로 된 파일을 등록해주세요. (예: 탄산2+1,2,1,2024-01-01,2024-12-31)"
+                                ));
             }
 
-            @Test
+            @ParameterizedTest
             @DisplayName("'{상품명}2+1', '{상품명}1+1', 'MD추천상품', '반짝할인'과 같은 행사명을 등록해주세요")
-            void nameFormatException() {
-
+            @ValueSource(strings = {
+                    "src/main/resources/promotionsException/nameFormatException.md",
+                    "src/main/resources/promotionsException/nameFormatException2.md"
+            })
+            void nameFormatException(String location) {
+                assertSimpleTest(() ->
+                        assertThatThrownBy(() -> convenienceStore.setUpPromotionsFile(location))
+                                .isInstanceOf(IllegalArgumentException.class)
+                                .isInstanceOf(PromotionsFileException.class)
+                                .hasMessageContaining(
+                                        "[ERROR] 프로모션 목록 파일의 형식이 잘못되었습니다. '{상품명}2+1', '{상품명}1+1', 'MD추천상품', '반짝할인'과 같은 행사명을 등록해주세요."));
             }
 
             @Test
             @DisplayName("buy와 get을 올바르게 등록해주세요")
-            void wrongBuyGetException() {
+            void buyGetException() {
+                assertSimpleTest(() ->
+                        assertThatThrownBy(() -> convenienceStore.setUpPromotionsFile(
+                                "src/main/resources/promotionsException/buyGetException.md"))
+                                .isInstanceOf(IllegalArgumentException.class)
+                                .isInstanceOf(PromotionsFileException.class)
+                                .hasMessageContaining("[ERROR] 프로모션 목록 파일의 형식이 잘못되었습니다. buy와 get을 올바르게 등록해주세요."));
+            }
 
+            @Test
+            @DisplayName("프로모션 날짜를 올바르게 등록해주세요.")
+            void dateFormatException() {
+                assertSimpleTest(() ->
+                        assertThatThrownBy(() -> convenienceStore.setUpPromotionsFile(
+                                "src/main/resources/promotionsException/dateFormatException.md"))
+                                .isInstanceOf(IllegalArgumentException.class)
+                                .isInstanceOf(PromotionsFileException.class)
+                                .hasMessageContaining("[ERROR] 프로모션 목록 파일의 형식이 잘못되었습니다. 프로모션 날짜를 올바르게 등록해주세요."));
             }
         }
 

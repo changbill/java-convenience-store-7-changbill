@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 import store.controller.StoreController;
 import store.controller.StoreControllerFactory;
-import store.exception.WrongInputException;
+import store.exception.InputException;
 import store.model.dto.ProductOrderDto;
 import store.model.dto.ReceiptDto;
 import store.model.dto.orderCalculationResponse.OrderCalculationResponse;
@@ -17,13 +17,13 @@ import store.view.FileLocation;
 import store.view.InputView;
 import store.view.OutputView;
 
-public class StoreClient {
+public class ConvenienceStore {
 
     private final InputView inputView;
     private final OutputView outputView;
     private final StoreController storeController;
 
-    public StoreClient() {
+    public ConvenienceStore() {
         inputView = new InputView();
         outputView = new OutputView();
         storeController = StoreControllerFactory.getStoreController();
@@ -31,8 +31,8 @@ public class StoreClient {
 
     public void run() {
         while(true) {
-            setUpPromotionsFile();
-            setUpProductsFile();
+            setUpPromotionsFile(FileLocation.PROMOTIONS.getLocation());
+            setUpProductsFile(FileLocation.PRODUCTS.getLocation());
             introduceProducts();
             List<ReceiptDto> receiptDtos = inputPurchaseList();
             printReceiptCoverWithTryCatch(receiptDtos);
@@ -40,7 +40,16 @@ public class StoreClient {
                 break;
             }
         }
+    }
 
+    public void setUpProductsFile(String location) {
+        List<String> rawProductInformations = inputView.readFile(location);
+        storeController.saveProductInformation(rawProductInformations);
+    }
+
+    public void setUpPromotionsFile(String location) {
+        List<String> rawPromotionInformations = inputView.readFile(location);
+        storeController.savePromotionInformation(rawPromotionInformations);
     }
 
     private boolean isRunAgain() {
@@ -50,7 +59,7 @@ public class StoreClient {
         } else if (yesOrNo.equals("N")) {
             return false;
         }
-        throw new WrongInputException(INPUT_Y_OR_N_EXCEPTION);
+        throw new InputException(INPUT_Y_OR_N_EXCEPTION);
     }
 
     private void printReceiptCoverWithTryCatch(List<ReceiptDto> receiptDtos) {
@@ -74,7 +83,7 @@ public class StoreClient {
             return;
         }
 
-        throw new WrongInputException(INPUT_Y_OR_N_EXCEPTION);
+        throw new InputException(INPUT_Y_OR_N_EXCEPTION);
     }
 
     private List<ReceiptDto> inputPurchaseList() {
@@ -137,7 +146,7 @@ public class StoreClient {
                     }
                 }
 
-                throw new WrongInputException(INPUT_Y_OR_N_EXCEPTION);
+                throw new InputException(INPUT_Y_OR_N_EXCEPTION);
             } catch (IllegalArgumentException e) {
                 System.out.println(e.getMessage());
             }
@@ -147,15 +156,5 @@ public class StoreClient {
     private void introduceProducts() {
         List<String> productsToString = storeController.getProductsToString();
         outputView.printIntroductionMessage(productsToString);
-    }
-
-    private void setUpProductsFile() {
-        List<String> rawProductInformations = inputView.readFile(FileLocation.PRODUCTS.getLocation());
-        storeController.saveProductInformation(rawProductInformations);
-    }
-
-    private void setUpPromotionsFile() {
-        List<String> rawPromotionInformations = inputView.readFile(FileLocation.PROMOTIONS.getLocation());
-        storeController.savePromotionInformation(rawPromotionInformations);
     }
 }

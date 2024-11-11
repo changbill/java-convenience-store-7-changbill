@@ -17,7 +17,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
-import store.exception.WrongInputException;
+import store.exception.InputException;
 import store.model.dto.ProductOrderDto;
 import store.model.setup.PromotionInformation;
 import store.model.stock.GeneralStock;
@@ -59,7 +59,7 @@ class OrderCalculationTest {
 
             assertThatThrownBy(orderCalculation::responseOrderCalculation)
                     .isInstanceOf(IllegalArgumentException.class)
-                    .isInstanceOf(WrongInputException.class)
+                    .isInstanceOf(InputException.class)
                     .hasMessageContaining(INPUT_MORE_THEN_STOCK_EXCEPTION);
         });
     }
@@ -104,7 +104,7 @@ class OrderCalculationTest {
 
                 assertThatThrownBy(orderCalculation::responseOrderCalculation)
                         .isInstanceOf(IllegalArgumentException.class)
-                        .isInstanceOf(WrongInputException.class)
+                        .isInstanceOf(InputException.class)
                         .hasMessageContaining(INPUT_MORE_THEN_STOCK_EXCEPTION);
             });
         }

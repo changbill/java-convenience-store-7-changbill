@@ -5,7 +5,7 @@ import static store.exception.InputExceptionMessage.INPUT_PRODUCT_WRONG_NAME_EXC
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
-import store.exception.WrongInputException;
+import store.exception.InputException;
 import store.model.dto.ProductOrderDto;
 import store.model.dto.ReceiptDto;
 import store.model.dto.orderCalculationResponse.OrderCalculationResponse;
@@ -67,7 +67,7 @@ public class ProductInformationRepository {
         if (productInformationMap.containsKey(productName)) {
             return productInformationMap.get(productName);
         }
-        throw new WrongInputException(INPUT_PRODUCT_WRONG_NAME_EXCEPTION);
+        throw new InputException(INPUT_PRODUCT_WRONG_NAME_EXCEPTION);
     }
 
     private ProductInformation storeProductInformation(String productName, long price, PromotionStock promotionStock) {

@@ -5,7 +5,7 @@ import static store.exception.InputExceptionMessage.INPUT_PRODUCT_NAME_AND_COUNT
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import store.exception.WrongInputException;
+import store.exception.InputException;
 import store.repository.ProductInformationRepository;
 import store.service.validation.InputValidationService;
 import store.model.dto.ProductOrderDto;
@@ -31,7 +31,7 @@ public class InputParser {
     }
 
     private List<String> getSplitedPurchaseOrder(String rawPurchaseOrder) {
-        ValidationUtil.validateNull(rawPurchaseOrder, new WrongInputException(INPUT_PRODUCT_NAME_AND_COUNT_EXCEPTION));
+        ValidationUtil.validateNull(rawPurchaseOrder, new InputException(INPUT_PRODUCT_NAME_AND_COUNT_EXCEPTION));
 
         List<String> productOrders = Arrays.stream(rawPurchaseOrder.split(",")).toList();
         inputValidationService.validateProductOrders(productOrders);
@@ -52,13 +52,13 @@ public class InputParser {
 
     private static String getName(List<String> nameAndQuantity) {
         ValidationUtil.validateFormatHangul
-                (nameAndQuantity.get(0), new WrongInputException(INPUT_PRODUCT_NAME_AND_COUNT_EXCEPTION));
+                (nameAndQuantity.get(0), new InputException(INPUT_PRODUCT_NAME_AND_COUNT_EXCEPTION));
         String name = nameAndQuantity.get(0);
         return name;
     }
 
     private long getQuantity(List<String> nameAndQuantity) {
-        ValidationUtil.validateLong(nameAndQuantity.get(1), new WrongInputException(
+        ValidationUtil.validateLong(nameAndQuantity.get(1), new InputException(
                 INPUT_PRODUCT_NAME_AND_COUNT_EXCEPTION));
         long quantity = Long.parseLong(nameAndQuantity.get(1));
         inputValidationService.validateMaxQuantity(quantity);

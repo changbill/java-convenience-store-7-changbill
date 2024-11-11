@@ -9,7 +9,7 @@ import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import store.exception.WrongInputException;
+import store.exception.InputException;
 import store.model.dto.ProductOrderDto;
 import store.repository.ProductInformationRepository;
 import store.service.validation.InputValidationService;
@@ -52,42 +52,38 @@ class InputParserTest {
 
         @Test
         void 빈값_예외테스트() {
-            assertSimpleTest(() -> {
-                assertThatThrownBy(() -> inputParser.parseToProductOrderDto(""))
-                        .isInstanceOf(IllegalArgumentException.class)
-                        .isInstanceOf(WrongInputException.class)
-                        .hasMessageContaining(INPUT_PRODUCT_NAME_AND_COUNT_EXCEPTION);
-            });
+            assertSimpleTest(() ->
+                    assertThatThrownBy(() -> inputParser.parseToProductOrderDto(""))
+                            .isInstanceOf(IllegalArgumentException.class)
+                            .isInstanceOf(InputException.class)
+                            .hasMessageContaining(INPUT_PRODUCT_NAME_AND_COUNT_EXCEPTION));
         }
 
         @Test
         void 형식_예외테스트() {
-            assertSimpleTest(() -> {
-                assertThatThrownBy(() -> inputParser.parseToProductOrderDto("나쵸-5"))
-                        .isInstanceOf(IllegalArgumentException.class)
-                        .isInstanceOf(WrongInputException.class)
-                        .hasMessageContaining(INPUT_PRODUCT_NAME_AND_COUNT_EXCEPTION);
-            });
+            assertSimpleTest(() ->
+                    assertThatThrownBy(() -> inputParser.parseToProductOrderDto("나쵸-5"))
+                            .isInstanceOf(IllegalArgumentException.class)
+                            .isInstanceOf(InputException.class)
+                            .hasMessageContaining(INPUT_PRODUCT_NAME_AND_COUNT_EXCEPTION));
         }
 
         @Test
         void 구분자_사이_빈값_예외테스트() {
-            assertSimpleTest(() -> {
-                assertThatThrownBy(() -> inputParser.parseToProductOrderDto("[나쵸-5],,[사이다-10]"))
-                        .isInstanceOf(IllegalArgumentException.class)
-                        .isInstanceOf(WrongInputException.class)
-                        .hasMessageContaining(INPUT_PRODUCT_NAME_AND_COUNT_EXCEPTION);
-            });
+            assertSimpleTest(() ->
+                    assertThatThrownBy(() -> inputParser.parseToProductOrderDto("[나쵸-5],,[사이다-10]"))
+                            .isInstanceOf(IllegalArgumentException.class)
+                            .isInstanceOf(InputException.class)
+                            .hasMessageContaining(INPUT_PRODUCT_NAME_AND_COUNT_EXCEPTION));
         }
 
         @Test
         void 구분자_없음_예외테스트() {
-            assertSimpleTest(() -> {
-                assertThatThrownBy(() -> inputParser.parseToProductOrderDto("[나쵸-5][사이다-1]"))
-                        .isInstanceOf(IllegalArgumentException.class)
-                        .isInstanceOf(WrongInputException.class)
-                        .hasMessageContaining(INPUT_PRODUCT_NAME_AND_COUNT_EXCEPTION);
-            });
+            assertSimpleTest(() ->
+                    assertThatThrownBy(() -> inputParser.parseToProductOrderDto("[나쵸-5][사이다-1]"))
+                            .isInstanceOf(IllegalArgumentException.class)
+                            .isInstanceOf(InputException.class)
+                            .hasMessageContaining(INPUT_PRODUCT_NAME_AND_COUNT_EXCEPTION));
         }
     }
 }
