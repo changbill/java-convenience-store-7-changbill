@@ -26,6 +26,10 @@ public class PromotionInformation {
         }
         return promotionInformation;
     }
+    
+    public double calculateBuyGetRatio() {
+        return (double) get / (double) (buy + get);
+    }
 
     // TODO: 오늘 날짜에 적용되는 프로모션만 적용.. promotions.md 읽을 때 사용할 수 있고 없고 정하자.
     public boolean isAvailablePromotion() {
