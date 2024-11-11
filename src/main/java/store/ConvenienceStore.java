@@ -13,7 +13,6 @@ import store.model.dto.ReceiptDto;
 import store.model.dto.orderCalculationResponse.OrderCalculationResponse;
 import store.model.dto.orderCalculationResponse.SomeDontBenefitResponse;
 import store.model.dto.orderCalculationResponse.TakeExtraBenefitResponse;
-import store.view.FileLocation;
 import store.view.InputView;
 import store.view.OutputView;
 
@@ -29,10 +28,10 @@ public class ConvenienceStore {
         storeController = StoreControllerFactory.getStoreController();
     }
 
-    public void run() {
+    public void run(String promotionsFileLocation, String productsFileLocation) {
+            setUpPromotionsFile(promotionsFileLocation);
+            setUpProductsFile(productsFileLocation);
         while(true) {
-            setUpPromotionsFile(FileLocation.PROMOTIONS.getLocation());
-            setUpProductsFile(FileLocation.PRODUCTS.getLocation());
             introduceProducts();
             List<ReceiptDto> receiptDtos = inputPurchaseList();
             printReceiptCoverWithTryCatch(receiptDtos);

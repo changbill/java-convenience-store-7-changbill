@@ -8,6 +8,8 @@ import static store.exception.ProductsFileExceptionMessage.PRODUCTS_FILE_NAME_FO
 import static store.exception.ProductsFileExceptionMessage.PRODUCTS_FILE_PRICE_UNIT_EXCEPTION;
 import static store.exception.ProductsFileExceptionMessage.PRODUCTS_FILE_QUANTITY_RANGE_EXCEPTION;
 import static store.exception.ProductsFileExceptionMessage.PRODUCTS_FILE_WRONG_PROMOTION_EXCEPTION;
+import static store.view.FileLocation.PRODUCTS;
+import static store.view.FileLocation.PROMOTIONS;
 
 import camp.nextstep.edu.missionutils.test.NsTest;
 import org.junit.jupiter.api.BeforeEach;
@@ -29,6 +31,123 @@ class ConvenienceStoreTest extends NsTest {
         convenienceStore = new ConvenienceStore();
     }
 
+    @Nested
+    @DisplayName("요구사항 테스트")
+    class requirementsTests {
+
+        @Test
+        @DisplayName("상품명과 수량 입력 안내 출력")
+        void productNameAndQuantityGuide() {
+            assertSimpleTest(() -> {
+                run("[사이다-6]", "Y", "N");
+                assertThat(output()).contains("구매하실 상품명과 수량을 입력해 주세요. (예: [사이다-2],[감자칩-1])");
+            });
+        }
+
+        @Test
+        @DisplayName("프로모션 수량보다 적게 가져온 경우, 그 수량만큼 추가 여부 입력(Y or N)")
+        void lessThenPromotion() {
+            assertSimpleTest(() -> {
+                run("[사이다-2]", "N", "N", "N");
+                assertThat(output()).contains("현재 사이다은(는) 1개를 무료로 더 받을 수 있습니다. 추가하시겠습니까? (Y/N)");
+            });
+        }
+
+        @Test
+        @DisplayName("프로모션 수량보다 적게 가져온 경우, 그 수량만큼 추가 선택 시")
+        void lessThenPromotionYes() {
+            assertSimpleTest(() -> {
+                run("[사이다-2]", "Y", "N", "N");
+                assertThat(output().replaceAll("\\s","")).contains("사이다33,000");
+            });
+        }
+
+        @Test
+        @DisplayName("프로모션 재고가 부족하여 일부 수량 프로모션 혜택 없이 결제해야 하는 경우")
+        void lessPromotionStock() {
+            assertSimpleTest(() -> {
+                run("[사이다-12]", "N", "N", "N");
+                assertThat(output()).contains("현재 사이다 3개는 프로모션 할인이 적용되지 않습니다. 그래도 구매하시겠습니까? (Y/N)");
+            });
+        }
+
+        @Test
+        @DisplayName("프로모션 재고가 부족하여 일부 수량 프로모션 혜택 없이 결제해야 하는 경우")
+        void lessPromotionStockNo() {
+            assertSimpleTest(() -> {
+                run("[사이다-12]", "N", "N", "N");
+                assertThat(output().replaceAll("\\s","")).contains("사이다99,000");
+            });
+        }
+
+        @Test
+        @DisplayName("멤버십 할인 적용 여부 입력 안내 문구 출력")
+        void membershipDiscount() {
+            assertSimpleTest(() -> {
+                run("[사이다-12]", "N", "N", "N");
+                assertThat(output()).contains("멤버십 할인을 받으시겠습니까? (Y/N)");
+            });
+        }
+
+        @Test
+        @DisplayName("멤버십 할인 적용 시")
+        void membershipDiscountYes() {
+            assertSimpleTest(() -> {
+                run("[초코바-8]", "Y", "Y", "N");
+                assertThat(output().replaceAll("\\s","")).contains("멤버십할인-720");
+            });
+        }
+
+        @Test
+        @DisplayName("추가 구매 여부 확인 안내 문구 출력")
+        void checkAdditionalPurchase() {
+            assertSimpleTest(() -> {
+                run("[사이다-6]", "Y", "N");
+                assertThat(output()).contains("감사합니다. 구매하고 싶은 다른 상품이 있나요? (Y/N)");
+            });
+        }
+
+        @Test
+        @DisplayName("추가 구매 선택 시")
+        void checkAdditionalPurchaseYes() {
+            assertSimpleTest(() -> {
+                run("[사이다-6]", "Y", "Y", "[콜라-3]", "Y", "N");
+                assertThat(output().replaceAll("\\s","")).contains("-사이다1,000원2개탄산2+1");
+            });
+        }
+
+        @Test
+        @DisplayName("멤버십 할인 최대 한도는 8,000원")
+        void maxDiscountTest() {
+            assertSimpleTest(() -> {
+                run("[정식도시락-8]", "Y", "N");
+                assertThat(output().replaceAll("\\s","")).contains("멤버십할인-8,000");
+            });
+        }
+
+        @Test
+        @DisplayName("영수증 테스트")
+        void eventDiscount() {
+            assertSimpleTest(() -> {
+                run("[콜라-3],[오렌지주스-2],[에너지바-5]", "Y", "N");
+                assertThat(output()).contains("""
+                        ===========W 편의점=============
+                        상품명		수량	금액
+                        콜라		3 	3,000
+                        오렌지주스		2 	3,600
+                        에너지바		5 	10,000
+                        ===========증	정=============
+                        콜라		1
+                        오렌지주스		1
+                        ==============================
+                        총구매액		10		16,600
+                        행사할인				-2,800
+                        멤버십할인				-3,000
+                        내실돈				10,800
+                        """);
+            });
+        }
+    }
 
     @Nested
     @DisplayName("통합 예외테스트")
@@ -232,6 +351,6 @@ class ConvenienceStoreTest extends NsTest {
 
     @Override
     protected void runMain() {
-        convenienceStore.run();
+        convenienceStore.run(PROMOTIONS.getLocation(), PRODUCTS.getLocation());
     }
 }
