@@ -25,7 +25,7 @@ class StoreServiceTest {
         inputParser = new InputParser(productInformationRepository, new InputValidationService());
         outputParser = new OutputParser();
         PromotionInformationRepository promotionInformationRepository = new PromotionInformationRepository();
-        productsParser = new ProductsParser(productInformationRepository, promotionInformationRepository, new ProductsValidationService());
+        productsParser = new ProductsParser(productInformationRepository, promotionInformationRepository, new ProductsValidationService(promotionInformationRepository));
         promotionsParser = new PromotionsParser(promotionInformationRepository, new PromotionValidationService());
         storeService = new StoreService(productInformationRepository, inputParser, outputParser, productsParser, promotionsParser);
     }

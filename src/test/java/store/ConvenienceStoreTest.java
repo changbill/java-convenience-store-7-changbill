@@ -3,6 +3,11 @@ package store;
 import static camp.nextstep.edu.missionutils.test.Assertions.assertSimpleTest;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static store.exception.ProductsFileExceptionMessage.PRODUCTS_FILE_MAX_PRICE_EXCEPTION;
+import static store.exception.ProductsFileExceptionMessage.PRODUCTS_FILE_NAME_FORMAT_EXCEPTION;
+import static store.exception.ProductsFileExceptionMessage.PRODUCTS_FILE_PRICE_UNIT_EXCEPTION;
+import static store.exception.ProductsFileExceptionMessage.PRODUCTS_FILE_QUANTITY_RANGE_EXCEPTION;
+import static store.exception.ProductsFileExceptionMessage.PRODUCTS_FILE_WRONG_PROMOTION_EXCEPTION;
 
 import camp.nextstep.edu.missionutils.test.NsTest;
 import org.junit.jupiter.api.BeforeEach;
@@ -12,6 +17,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullSource;
 import org.junit.jupiter.params.provider.ValueSource;
+import store.exception.ProductsFileException;
 import store.exception.PromotionsFileException;
 
 class ConvenienceStoreTest extends NsTest {
@@ -162,31 +168,66 @@ class ConvenienceStoreTest extends NsTest {
         class ReadProductsFileExceptionTests {
 
             @Test
+            @DisplayName("name,price,quantity,promotion 형식으로 된 파일을 등록해주세요")
+            void formatException() {
+                assertSimpleTest(() ->
+                        assertThatThrownBy(() -> convenienceStore.setUpProductsFile(
+                                "src/main/resources/productsException/lesserElementsFormatException.md"))
+                                .isInstanceOf(IllegalArgumentException.class)
+                                .isInstanceOf(ProductsFileException.class)
+                                .hasMessageContaining("[ERROR] 상품 목록 파일의 형식이 잘못되었습니다. name,price,quantity,promotion 형식으로 된 파일을 등록해주세요. (예: 탄산수,1200,5,탄산2+1)"));
+            }
+
+            @Test
             @DisplayName("이름은 한글 형식으로 적어주세요")
-            void nameException2() {
+            void nameException() {
+                assertThatThrownBy(() -> convenienceStore.setUpProductsFile(
+                        "src/main/resources/productsException/nameException.md"))
+                        .isInstanceOf(IllegalArgumentException.class)
+                        .isInstanceOf(ProductsFileException.class)
+                        .hasMessageContaining("[ERROR] 상품 목록 파일의 형식이 잘못되었습니다. " + PRODUCTS_FILE_NAME_FORMAT_EXCEPTION);
             }
 
             @Test
             @DisplayName("1,000,000,000원 미만의 가격을 적어주세요")
-            void costException1() {
+            void maxCostException() {
+                assertThatThrownBy(() -> convenienceStore.setUpProductsFile(
+                        "src/main/resources/productsException/maxCostException.md"))
+                        .isInstanceOf(IllegalArgumentException.class)
+                        .isInstanceOf(ProductsFileException.class)
+                        .hasMessageContaining("[ERROR] 상품 목록 파일의 형식이 잘못되었습니다. " + PRODUCTS_FILE_MAX_PRICE_EXCEPTION);
             }
 
             @Test
             @DisplayName("가격은 100원 단위로 적어주세요")
-            void costException2() {
+            void costUnitException() {
+                assertThatThrownBy(() -> convenienceStore.setUpProductsFile(
+                        "src/main/resources/productsException/costUnitException.md"))
+                        .isInstanceOf(IllegalArgumentException.class)
+                        .isInstanceOf(ProductsFileException.class)
+                        .hasMessageContaining("[ERROR] 상품 목록 파일의 형식이 잘못되었습니다. " + PRODUCTS_FILE_PRICE_UNIT_EXCEPTION);
             }
 
             @Test
-            @DisplayName("해당하는 프로모션이 없습니다")
+            @DisplayName("재고는 1,000개 미만으로 등록해주세요")
+            void maxQuantityException() {
+                assertThatThrownBy(() -> convenienceStore.setUpProductsFile(
+                        "src/main/resources/productsException/maxQuantityException.md"))
+                        .isInstanceOf(IllegalArgumentException.class)
+                        .isInstanceOf(ProductsFileException.class)
+                        .hasMessageContaining("[ERROR] 상품 목록 파일의 형식이 잘못되었습니다. " + PRODUCTS_FILE_QUANTITY_RANGE_EXCEPTION);
+            }
+
+            @Test
+            @DisplayName("현재 운영되고 있는 프로모션 중 해당하는 프로모션이 없습니다")
             void promotionException() {
-            }
-
-            @Test
-            @DisplayName("name,price,quantity,promotion 형식으로 된 파일을 등록해주세요")
-            void fileFormatException() {
+                assertThatThrownBy(() -> convenienceStore.setUpProductsFile(
+                        "src/main/resources/productsException/promotionException.md"))
+                        .isInstanceOf(IllegalArgumentException.class)
+                        .isInstanceOf(ProductsFileException.class)
+                        .hasMessageContaining("[ERROR] 상품 목록 파일의 형식이 잘못되었습니다. " + PRODUCTS_FILE_WRONG_PROMOTION_EXCEPTION);
             }
         }
-
     }
 
     @Override

@@ -16,7 +16,7 @@ public class StoreControllerFactory {
     public static StoreController getStoreController() {
         ProductInformationRepository productInformationRepository = new ProductInformationRepository();
         PromotionInformationRepository promotionInformationRepository = new PromotionInformationRepository();
-        ProductsValidationService productsValidationService = new ProductsValidationService();
+        ProductsValidationService productsValidationService = new ProductsValidationService(promotionInformationRepository);
         PromotionValidationService promotionValidationService = new PromotionValidationService();
         InputValidationService inputValidationService = new InputValidationService();
         InputParser inputParser = new InputParser(productInformationRepository, inputValidationService);
