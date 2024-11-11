@@ -51,6 +51,11 @@ public class OutputView {
                 totalMembershipDiscount += (long) ((double) receipt.productPrice() * 0.3);
             }
         }
+
+        if(totalMembershipDiscount > 8000) {
+            totalMembershipDiscount = 8000;
+        }
+        
         stringBuilder.append(TOTAL_PRICE).append(BLANK)
                 .append(ParseUtil.thousandDelimiter(totalQuantity)).append(BLANK)
                 .append(ParseUtil.thousandDelimiter(totalPrice)).append("\n");
