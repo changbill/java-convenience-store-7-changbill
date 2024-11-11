@@ -78,7 +78,8 @@ public class StoreService {
     }
 
     public List<ReceiptDto> putOrders(List<ProductOrderDto> orders) {
+        List<ReceiptDto> receiptDtos = productInformationRepository.calculatePrice(orders);
         productInformationRepository.putProductOrders(orders);
-        return productInformationRepository.calculatePrice(orders);
+        return receiptDtos;
     }
 }
