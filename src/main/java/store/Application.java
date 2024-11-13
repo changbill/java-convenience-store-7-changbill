@@ -1,7 +1,11 @@
 package store;
 
+import static store.view.FileLocation.*;
+import static store.view.FileLocation.PROMOTIONS;
+
 public class Application {
     public static void main(String[] args) {
-        // TODO: 프로그램 구현
+        final ConvenienceStore convenienceStore = new ConvenienceStore();
+        convenienceStore.run(PROMOTIONS.getLocation(), PRODUCTS.getLocation());
     }
 }
