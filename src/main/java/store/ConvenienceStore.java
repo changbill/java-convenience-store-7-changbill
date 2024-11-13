@@ -1,6 +1,8 @@
 package store;
 
 import static store.exception.InputExceptionMessage.INPUT_Y_OR_N_EXCEPTION;
+import static store.util.ParseConstant.NO;
+import static store.util.ParseConstant.YES;
 import static store.util.ResponseMessage.*;
 
 import java.util.ArrayList;
@@ -53,9 +55,9 @@ public class ConvenienceStore {
 
     private boolean isRunAgain() {
         String yesOrNo = inputView.getDoYouNeedSomethingElse();
-        if (yesOrNo.equals("Y")) {
+        if (yesOrNo.equals(YES.getValue())) {
             return true;
-        } else if (yesOrNo.equals("N")) {
+        } else if (yesOrNo.equals(NO.getValue())) {
             return false;
         }
         throw new InputException(INPUT_Y_OR_N_EXCEPTION);
@@ -74,10 +76,10 @@ public class ConvenienceStore {
 
     private void printReceipt(List<ReceiptDto> receiptDtos) {
         String isMembership = inputView.questionMembershipDiscount();
-        if (isMembership.equals("Y")) {
+        if (isMembership.equals(YES.getValue())) {
             outputView.printReceipt(receiptDtos, true);
             return;
-        } else if (isMembership.equals("N")) {
+        } else if (isMembership.equals(NO.getValue())) {
             outputView.printReceipt(receiptDtos, false);
             return;
         }
@@ -128,9 +130,9 @@ public class ConvenienceStore {
                     long benefitQuantity = takeExtraBenefitResponse.getBenefitQuantity();
                     String productName = purchaseResponse.getProductOrderDto().productName();
                     long quantity = purchaseResponse.getProductOrderDto().quantity();
-                    if (yesOrNo.equals("Y")) {
+                    if (yesOrNo.equals(YES.getValue())) {
                         return ProductOrderDto.of(productName, quantity + benefitQuantity);
-                    } else if (yesOrNo.equals("N")) {
+                    } else if (yesOrNo.equals(NO.getValue())) {
                         return ProductOrderDto.of(productName, quantity);
                     }
                 } else if (purchaseResponse.getResponseMessage().equals(SOME_DONT_BENEFIT)) {
@@ -138,9 +140,9 @@ public class ConvenienceStore {
                     long notBenefitQuantity = someDontBenefitResponse.getNotBenefitQuantity();
                     String productName = purchaseResponse.getProductOrderDto().productName();
                     long quantity = purchaseResponse.getProductOrderDto().quantity();
-                    if (yesOrNo.equals("Y")) {
+                    if (yesOrNo.equals(YES.getValue())) {
                         return ProductOrderDto.of(productName, quantity);
-                    } else if (yesOrNo.equals("N")) {
+                    } else if (yesOrNo.equals(NO.getValue())) {
                         return ProductOrderDto.of(productName, quantity - notBenefitQuantity);
                     }
                 }

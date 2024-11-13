@@ -28,13 +28,13 @@ public class InputView {
     public String printPurchaseResponse(OrderCalculationResponse orderCalculationResponse) {
         if (orderCalculationResponse.getClass() == TakeExtraBenefitResponse.class) {
             System.out.printf(
-                    (orderCalculationResponse.getResponseMessage().getMessage()) + "%n",
+                    (orderCalculationResponse.getResponseMessage().getMessage()) + "\n",
                     orderCalculationResponse.getProductOrderDto().productName(),
                     ((TakeExtraBenefitResponse) orderCalculationResponse).getBenefitQuantity()
             );
         } else if (orderCalculationResponse.getClass() == SomeDontBenefitResponse.class) {
             System.out.printf(
-                    (orderCalculationResponse.getResponseMessage().getMessage()) + "%n",
+                    (orderCalculationResponse.getResponseMessage().getMessage()) + "\n",
                     orderCalculationResponse.getProductOrderDto().productName(),
                     ((SomeDontBenefitResponse) orderCalculationResponse).getNotBenefitQuantity()
             );

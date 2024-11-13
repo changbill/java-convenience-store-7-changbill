@@ -8,6 +8,8 @@ import static store.exception.ProductsFileExceptionMessage.PRODUCTS_FILE_NAME_FO
 import static store.exception.ProductsFileExceptionMessage.PRODUCTS_FILE_PRICE_UNIT_EXCEPTION;
 import static store.exception.ProductsFileExceptionMessage.PRODUCTS_FILE_QUANTITY_RANGE_EXCEPTION;
 import static store.exception.ProductsFileExceptionMessage.PRODUCTS_FILE_WRONG_PROMOTION_EXCEPTION;
+import static store.util.ParseConstant.NO;
+import static store.util.ParseConstant.YES;
 import static store.view.FileLocation.PRODUCTS;
 import static store.view.FileLocation.PROMOTIONS;
 
@@ -31,6 +33,15 @@ class ConvenienceStoreTest extends NsTest {
         convenienceStore = new ConvenienceStore();
     }
 
+    @Test
+    @DisplayName("일반재고만 있는 경우 테스트")
+    void 일반재고만_있는경우_테스트() {
+        assertSimpleTest(() -> {
+            run("[초코바-5]", YES.getValue(), NO.getValue(), YES.getValue(), "[초코바-4]", YES.getValue(), NO.getValue(), NO.getValue());
+            assertThat(output()).contains("총구매액\t\t4\t\t4,800");
+        });
+    }
+
     @Nested
     @DisplayName("요구사항 테스트")
     class requirementsTests {
@@ -39,7 +50,7 @@ class ConvenienceStoreTest extends NsTest {
         @DisplayName("상품명과 수량 입력 안내 출력")
         void productNameAndQuantityGuide() {
             assertSimpleTest(() -> {
-                run("[사이다-6]", "Y", "N");
+                run("[사이다-6]", YES.getValue(), NO.getValue());
                 assertThat(output()).contains("구매하실 상품명과 수량을 입력해 주세요. (예: [사이다-2],[감자칩-1])");
             });
         }
@@ -48,7 +59,7 @@ class ConvenienceStoreTest extends NsTest {
         @DisplayName("프로모션 수량보다 적게 가져온 경우, 그 수량만큼 추가 여부 입력(Y or N)")
         void lessThenPromotion() {
             assertSimpleTest(() -> {
-                run("[사이다-2]", "N", "N", "N");
+                run("[사이다-2]", NO.getValue(), NO.getValue(), NO.getValue());
                 assertThat(output()).contains("현재 사이다은(는) 1개를 무료로 더 받을 수 있습니다. 추가하시겠습니까? (Y/N)");
             });
         }
@@ -57,7 +68,7 @@ class ConvenienceStoreTest extends NsTest {
         @DisplayName("프로모션 수량보다 적게 가져온 경우, 그 수량만큼 추가 선택 시")
         void lessThenPromotionYes() {
             assertSimpleTest(() -> {
-                run("[사이다-2]", "Y", "N", "N");
+                run("[사이다-2]", YES.getValue(), NO.getValue(), NO.getValue());
                 assertThat(output().replaceAll("\\s","")).contains("사이다33,000");
             });
         }
@@ -66,7 +77,7 @@ class ConvenienceStoreTest extends NsTest {
         @DisplayName("프로모션 재고가 부족하여 일부 수량 프로모션 혜택 없이 결제해야 하는 경우")
         void lessPromotionStock() {
             assertSimpleTest(() -> {
-                run("[사이다-12]", "N", "N", "N");
+                run("[사이다-12]", NO.getValue(), NO.getValue(), NO.getValue());
                 assertThat(output()).contains("현재 사이다 3개는 프로모션 할인이 적용되지 않습니다. 그래도 구매하시겠습니까? (Y/N)");
             });
         }
@@ -75,7 +86,7 @@ class ConvenienceStoreTest extends NsTest {
         @DisplayName("프로모션 재고가 부족하여 일부 수량 프로모션 혜택 없이 결제해야 하는 경우")
         void lessPromotionStockNo() {
             assertSimpleTest(() -> {
-                run("[사이다-12]", "N", "N", "N");
+                run("[사이다-12]", NO.getValue(), NO.getValue(), NO.getValue());
                 assertThat(output().replaceAll("\\s","")).contains("사이다99,000");
             });
         }
@@ -84,7 +95,7 @@ class ConvenienceStoreTest extends NsTest {
         @DisplayName("멤버십 할인 적용 여부 입력 안내 문구 출력")
         void membershipDiscount() {
             assertSimpleTest(() -> {
-                run("[사이다-12]", "N", "N", "N");
+                run("[사이다-12]", NO.getValue(), NO.getValue(), NO.getValue());
                 assertThat(output()).contains("멤버십 할인을 받으시겠습니까? (Y/N)");
             });
         }
@@ -93,7 +104,7 @@ class ConvenienceStoreTest extends NsTest {
         @DisplayName("멤버십 할인 적용 시")
         void membershipDiscountYes() {
             assertSimpleTest(() -> {
-                run("[초코바-8]", "Y", "Y", "N");
+                run("[초코바-8]", YES.getValue(), YES.getValue(), NO.getValue());
                 assertThat(output().replaceAll("\\s","")).contains("멤버십할인-720");
             });
         }
@@ -102,7 +113,7 @@ class ConvenienceStoreTest extends NsTest {
         @DisplayName("추가 구매 여부 확인 안내 문구 출력")
         void checkAdditionalPurchase() {
             assertSimpleTest(() -> {
-                run("[사이다-6]", "Y", "N");
+                run("[사이다-6]", YES.getValue(), NO.getValue());
                 assertThat(output()).contains("감사합니다. 구매하고 싶은 다른 상품이 있나요? (Y/N)");
             });
         }
@@ -111,7 +122,7 @@ class ConvenienceStoreTest extends NsTest {
         @DisplayName("추가 구매 선택 시")
         void checkAdditionalPurchaseYes() {
             assertSimpleTest(() -> {
-                run("[사이다-6]", "Y", "Y", "[콜라-3]", "Y", "N");
+                run("[사이다-6]", YES.getValue(), YES.getValue(), "[콜라-3]", YES.getValue(), NO.getValue());
                 assertThat(output().replaceAll("\\s","")).contains("-사이다1,000원2개탄산2+1");
             });
         }
@@ -120,7 +131,7 @@ class ConvenienceStoreTest extends NsTest {
         @DisplayName("멤버십 할인 최대 한도는 8,000원")
         void maxDiscountTest() {
             assertSimpleTest(() -> {
-                run("[정식도시락-8]", "Y", "N");
+                run("[정식도시락-8]", YES.getValue(), NO.getValue());
                 assertThat(output().replaceAll("\\s","")).contains("멤버십할인-8,000");
             });
         }
@@ -129,7 +140,7 @@ class ConvenienceStoreTest extends NsTest {
         @DisplayName("영수증 테스트")
         void eventDiscount() {
             assertSimpleTest(() -> {
-                run("[콜라-3],[오렌지주스-2],[에너지바-5]", "Y", "N");
+                run("[콜라-3],[오렌지주스-2],[에너지바-5]", YES.getValue(), NO.getValue());
                 assertThat(output()).contains("""
                         ===========W 편의점=============
                         상품명		수량	금액
@@ -169,7 +180,7 @@ class ConvenienceStoreTest extends NsTest {
             }
 
             @ParameterizedTest
-            @ValueSource(strings = {"y", "n", "A", "1", "!", "\n"})
+            @ValueSource(strings = {"Y", "N", "A", "1", "!", "\n"})
             @NullSource
             @DisplayName("잘못된 입력입니다")
             void yesOrNoException(String yesOrNo) {
