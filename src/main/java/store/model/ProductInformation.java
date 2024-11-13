@@ -29,7 +29,6 @@ public class ProductInformation {
     }
 
     public ProductInformation addProductInformation(PromotionStock promotionStock) {
-
         if(this.promotionStock != null && this.generalStock != null) {
             double existingPromotionRatio = this.promotionStock.getPromotion().calculateBuyGetRatio();
             double newPromotionRatio = promotionStock.getPromotion().calculateBuyGetRatio();

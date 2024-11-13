@@ -2,7 +2,7 @@ package store.service.parse;
 
 import static store.exception.InputExceptionMessage.INPUT_PRODUCT_NAME_AND_COUNT_EXCEPTION;
 import static store.util.ParseConstant.NAME_AND_QUANTITY_DELIMITER;
-import static store.util.ParseConstant.PRODUCT_ORDER_DELIMITER;
+import static store.util.ParseConstant.COMMA_DELIMITER;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -33,7 +33,7 @@ public class InputParser {
         ValidationUtil.validateNull(rawPurchaseOrder, new InputException(INPUT_PRODUCT_NAME_AND_COUNT_EXCEPTION));
 
         List<String> productOrders =
-                Arrays.stream(rawPurchaseOrder.split(PRODUCT_ORDER_DELIMITER.getValue())).toList();
+                Arrays.stream(rawPurchaseOrder.split(COMMA_DELIMITER.getValue())).toList();
         inputValidationService.validateProductOrders(productOrders);
 
         return productOrders;

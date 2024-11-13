@@ -6,7 +6,8 @@ import static store.exception.ProductsFileExceptionMessage.PRODUCTS_FILE_NAME_FO
 import static store.exception.ProductsFileExceptionMessage.PRODUCTS_FILE_PRICE_UNIT_EXCEPTION;
 import static store.exception.ProductsFileExceptionMessage.PRODUCTS_FILE_QUANTITY_RANGE_EXCEPTION;
 import static store.exception.ProductsFileExceptionMessage.PRODUCTS_FILE_WRONG_PROMOTION_EXCEPTION;
-import static store.util.ValidationConstant.*;
+import static store.util.ValidationNumberConstant.*;
+import static store.util.ValidationStringConstant.PROMOTION_INFORMATION_EMPTY;
 
 import java.util.List;
 import store.exception.ProductsFileException;
@@ -18,6 +19,7 @@ public class ProductsValidationService {
     private static final int PRODUCT_PRICE_INDEX = 1;
     private static final int PRODUCT_QUANTITY_INDEX = 2;
     private static final int PRODUCT_PROMOTION_INDEX = 3;
+    private static final int PRODUCT_INFORMATION_SIZE = 4;
 
     private final PromotionInformationRepository promotionInformationRepository;
 
@@ -26,7 +28,7 @@ public class ProductsValidationService {
     }
 
     public void validateProductInformations(List<String> rawProductInformation) {
-        if (rawProductInformation.size() != 4) {
+        if (rawProductInformation.size() != PRODUCT_INFORMATION_SIZE) {
             throw new ProductsFileException(PRODUCTS_FILE_EXAMPLE);
         }
 
@@ -46,7 +48,7 @@ public class ProductsValidationService {
             if (price >= PRODUCTS_FILE_MAX_PRICE.getValue()) {
                 throw new ProductsFileException(PRODUCTS_FILE_MAX_PRICE_EXCEPTION);
             }
-            if (price % MINIMUM_PRICE_UNIT.getValue() != 0) {
+            if (price % PRICE_UNIT.getValue() != 0) {
                 throw new ProductsFileException(PRODUCTS_FILE_PRICE_UNIT_EXCEPTION);
             }
         } catch (NumberFormatException e) {
@@ -69,7 +71,7 @@ public class ProductsValidationService {
     private void validateProductInformationPromotion(String rawPromotion) {
         ValidationUtil.validateNull(rawPromotion, new ProductsFileException(PRODUCTS_FILE_EXAMPLE));
         if (promotionInformationRepository.findPromotionInformation(rawPromotion) == null &&
-                !rawPromotion.equals("null")) {
+                !rawPromotion.equals(PROMOTION_INFORMATION_EMPTY.getValue())) {
             throw new ProductsFileException(PRODUCTS_FILE_WRONG_PROMOTION_EXCEPTION);
         }
     }

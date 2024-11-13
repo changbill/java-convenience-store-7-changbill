@@ -1,6 +1,7 @@
 package store.service.parse;
 
 import static store.exception.ProductsFileExceptionMessage.PRODUCTS_FILE_WRONG_PROMOTION_EXCEPTION;
+import static store.util.ValidationStringConstant.PROMOTION_INFORMATION_EMPTY;
 
 import java.util.List;
 import store.exception.ProductsFileException;
@@ -40,7 +41,7 @@ public class ProductsParser {
         long quantity = ParseUtil.parseToLong(rawProductInformation.get(QUANTITY_INDEX));
         String rawPromotion = rawProductInformation.get(PROMOTION_INDEX);
 
-        if(rawPromotion.equals("null")) {
+        if(rawPromotion.equals(PROMOTION_INFORMATION_EMPTY.getValue())) {
             return productInformationRepository.addProductInformation(name, price, GeneralStock.of(quantity));
         }
 

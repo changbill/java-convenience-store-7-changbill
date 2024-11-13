@@ -56,15 +56,15 @@ public class OutputParser {
 
     private static String parseToStockMessage(Stock stock, String name, long price) {
         if (stock.getQuantity() == 0) {
-            return START_OF_STOCK_MESSAGE.getValue() + " "
-                    + name + " "
-                    + String.format(THOUSAND_UNIT_COMMA_FORMAT.getValue(), price) + PRICE_UNIT.getValue() + " "
-                    + EMPTY_STOCK.getValue() + " ";
+            return START_OF_STOCK_MESSAGE.getValue() + ONE_SPACE_DELIMITER.getValue()
+                    + name + ONE_SPACE_DELIMITER.getValue()
+                    + String.format(THOUSAND_UNIT_COMMA_FORMAT.getValue(), price) + CURRENCY_UNIT.getValue() + ONE_SPACE_DELIMITER.getValue()
+                    + EMPTY_STOCK.getValue() + ONE_SPACE_DELIMITER.getValue();
         }
 
-        return START_OF_STOCK_MESSAGE.getValue() + " "
-                + name + " "
-                + String.format(THOUSAND_UNIT_COMMA_FORMAT.getValue(), price) + PRICE_UNIT.getValue() + " "
-                + stock.getQuantity() + QUANTITY_UNIT.getValue() + " ";
+        return START_OF_STOCK_MESSAGE.getValue() + ONE_SPACE_DELIMITER.getValue()
+                + name + ONE_SPACE_DELIMITER.getValue()
+                + String.format(THOUSAND_UNIT_COMMA_FORMAT.getValue(), price) + CURRENCY_UNIT.getValue() + ONE_SPACE_DELIMITER.getValue()
+                + stock.getQuantity() + QUANTITY_UNIT.getValue() + ONE_SPACE_DELIMITER.getValue();
     }
 }
